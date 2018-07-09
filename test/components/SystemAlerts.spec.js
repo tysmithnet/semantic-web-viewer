@@ -43,7 +43,7 @@ describe('SystemAlerts', () => {
 
     expect(wrapper.find('.app__system-alerts__top')).toBePresent();
     expect(mockDispatch.mock.calls[0][0]).toEqual({
-      type: 'HIDE_ALERT',
+      type: 'ALERT.HIDE_ALERT',
       payload: { id: 'ABD10' },
     });
   });
@@ -65,7 +65,7 @@ describe('SystemAlerts', () => {
 
     expect(wrapper.find('.app__system-alerts__top-left')).toBePresent();
     expect(mockDispatch.mock.calls[1][0]).toEqual({
-      type: 'HIDE_ALERT',
+      type: 'ALERT.HIDE_ALERT',
       payload: { id: 'ABD11' },
     });
   });
@@ -87,7 +87,7 @@ describe('SystemAlerts', () => {
 
     expect(wrapper.find('.app__system-alerts__top-right')).toBePresent();
     expect(mockDispatch.mock.calls[2][0]).toEqual({
-      type: 'HIDE_ALERT',
+      type: 'ALERT.HIDE_ALERT',
       payload: { id: 'ABD12' },
     });
   });
@@ -109,7 +109,7 @@ describe('SystemAlerts', () => {
 
     expect(wrapper.find('.app__system-alerts__bottom')).toBePresent();
     expect(mockDispatch.mock.calls[3][0]).toEqual({
-      type: 'HIDE_ALERT',
+      type: 'ALERT.HIDE_ALERT',
       payload: { id: 'ABD13' },
     });
   });
@@ -131,7 +131,7 @@ describe('SystemAlerts', () => {
 
     expect(wrapper.find('.app__system-alerts__bottom-left')).toBePresent();
     expect(mockDispatch.mock.calls[4][0]).toEqual({
-      type: 'HIDE_ALERT',
+      type: 'ALERT.HIDE_ALERT',
       payload: { id: 'ABD14' },
     });
   });
@@ -160,7 +160,7 @@ describe('SystemAlerts', () => {
     wrapper.find('.app__alert__close').simulate('click');
 
     expect(mockDispatch.mock.calls[5][0]).toEqual({
-      type: 'HIDE_ALERT',
+      type: 'ALERT.HIDE_ALERT',
       payload: { id: 'ABD15' },
     });
   });

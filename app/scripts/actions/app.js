@@ -17,7 +17,7 @@ export { go, goBack, push, replace };
  * @returns {Object}
  */
 export function hideAlert(id){
-  return { type: ActionTypes.HIDE_ALERT,
+  return { type: ActionTypes.ALERT.HIDE_ALERT,
 payload: {
     id,
   } };
@@ -41,7 +41,7 @@ export function showAlert(message, options) {
     : 5;
 
   return {
-    type: ActionTypes.SHOW_ALERT,
+    type: ActionTypes.ALERT.SHOW_ALERT,
     payload: {
       id: options.id || uuid(),
       icon: options.icon,

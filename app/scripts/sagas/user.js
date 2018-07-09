@@ -16,13 +16,13 @@ export function* login() {
     yield call(delay, 400);
 
     yield put({
-      type: ActionTypes.USER_LOGIN_SUCCESS,
+      type: ActionTypes.USER.USER_LOGIN_SUCCESS,
     });
   }
   catch (err) {
     /* istanbul ignore next */
     yield put({
-      type: ActionTypes.USER_LOGIN_FAILURE,
+      type: ActionTypes.USER.USER_LOGIN_FAILURE,
       payload: err,
     });
   }
@@ -36,13 +36,13 @@ export function* logout() {
     yield call(delay, 200);
 
     yield put({
-      type: ActionTypes.USER_LOGOUT_SUCCESS,
+      type: ActionTypes.USER.USER_LOGOUT_SUCCESS,
     });
   }
   catch (err) {
     /* istanbul ignore next */
     yield put({
-      type: ActionTypes.USER_LOGOUT_FAILURE,
+      type: ActionTypes.USER.USER_LOGOUT_FAILURE,
       payload: err,
     });
   }
@@ -53,7 +53,7 @@ export function* logout() {
  */
 export default function* root() {
   yield all([
-    takeLatest(ActionTypes.USER_LOGIN_REQUEST, login),
-    takeLatest(ActionTypes.USER_LOGOUT_REQUEST, logout),
+    takeLatest(ActionTypes.USER.USER_LOGIN_REQUEST, login),
+    takeLatest(ActionTypes.USER.USER_LOGOUT_REQUEST, logout),
   ]);
 }

@@ -20,7 +20,7 @@ describe('github', () => {
   it('should have the repos saga', () =>
     expectSaga(getRepos, { payload: { query: 'react' } })
       .put({
-        type: ActionTypes.GITHUB_GET_REPOS_SUCCESS,
+        type: ActionTypes.GITHUB.GITHUB_GET_REPOS_SUCCESS,
         payload: {
           data: [],
         },

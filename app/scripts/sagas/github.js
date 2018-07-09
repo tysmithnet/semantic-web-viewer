@@ -18,14 +18,14 @@ export function* getRepos({ payload }) {
   try {
     const response = yield call(request, `https://api.github.com/search/repositories?q=${payload.query}&sort=stars`);
     yield put({
-      type: ActionTypes.GITHUB_GET_REPOS_SUCCESS,
+      type: ActionTypes.GITHUB.GITHUB_GET_REPOS_SUCCESS,
       payload: { data: response.items },
     });
   }
   catch (err) {
     /* istanbul ignore next */
     yield put({
-      type: ActionTypes.GITHUB_GET_REPOS_FAILURE,
+      type: ActionTypes.GITHUB.GITHUB_GET_REPOS_FAILURE,
       payload: err,
     });
   }
@@ -36,6 +36,6 @@ export function* getRepos({ payload }) {
  */
 export default function* root() {
   yield all([
-    takeLatest(ActionTypes.GITHUB_GET_REPOS_REQUEST, getRepos),
+    takeLatest(ActionTypes.GITHUB.GITHUB_GET_REPOS_REQUEST, getRepos),
   ]);
 }

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Github should handle GITHUB_GET_REPOS_FAILURE 1`] = `
+exports[`Github should handle GITHUB.GITHUB_GET_REPOS_FAILURE 1`] = `
 Object {
   "repos": Object {
     "data": Object {},
@@ -11,7 +11,7 @@ Object {
 }
 `;
 
-exports[`Github should handle GITHUB_GET_REPOS_REQUEST 1`] = `
+exports[`Github should handle GITHUB.GITHUB_GET_REPOS_REQUEST 1`] = `
 Object {
   "repos": Object {
     "data": Object {
@@ -24,7 +24,7 @@ Object {
 }
 `;
 
-exports[`Github should handle GITHUB_GET_REPOS_SUCCESS 1`] = `
+exports[`Github should handle GITHUB.GITHUB_GET_REPOS_SUCCESS 1`] = `
 Object {
   "repos": Object {
     "data": Object {

@@ -7,25 +7,25 @@ describe('Github', () => {
       .toMatchSnapshot();
   });
 
-  it(`should handle ${ActionTypes.GITHUB_GET_REPOS_REQUEST}`, () => {
+  it(`should handle ${ActionTypes.GITHUB.GITHUB_GET_REPOS_REQUEST}`, () => {
     expect(reducer.github(undefined, {
-      type: ActionTypes.GITHUB_GET_REPOS_REQUEST,
+      type: ActionTypes.GITHUB.GITHUB_GET_REPOS_REQUEST,
       payload: { q: 'react' },
     }))
       .toMatchSnapshot();
   });
 
-  it(`should handle ${ActionTypes.GITHUB_GET_REPOS_SUCCESS}`, () => {
+  it(`should handle ${ActionTypes.GITHUB.GITHUB_GET_REPOS_SUCCESS}`, () => {
     expect(reducer.github(undefined, {
-      type: ActionTypes.GITHUB_GET_REPOS_SUCCESS,
+      type: ActionTypes.GITHUB.GITHUB_GET_REPOS_SUCCESS,
       payload: {},
     }))
       .toMatchSnapshot();
   });
 
-  it(`should handle ${ActionTypes.GITHUB_GET_REPOS_FAILURE}`, () => {
+  it(`should handle ${ActionTypes.GITHUB.GITHUB_GET_REPOS_FAILURE}`, () => {
     expect(reducer.github(undefined, {
-      type: ActionTypes.GITHUB_GET_REPOS_FAILURE,
+      type: ActionTypes.GITHUB.GITHUB_GET_REPOS_FAILURE,
       payload: {},
     }))
       .toMatchSnapshot();

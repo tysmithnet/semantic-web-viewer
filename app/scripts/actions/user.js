@@ -10,9 +10,9 @@ import { ActionTypes } from 'constants/index';
  *
  * @returns {Object}
  */
-export function login(): Object {
+export function login() {
   return {
-    type: ActionTypes.USER_LOGIN_REQUEST,
+    type: ActionTypes.USER.USER_LOGIN_REQUEST,
     payload: {},
   };
 }
@@ -22,9 +22,9 @@ export function login(): Object {
  *
  * @returns {Object}
  */
-export function logOut(): Object {
+export function logOut() {
   return {
-    type: ActionTypes.USER_LOGOUT_REQUEST,
+    type: ActionTypes.USER.USER_LOGOUT_REQUEST,
     payload: {},
   };
 }

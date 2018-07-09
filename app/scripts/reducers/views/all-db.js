@@ -11,7 +11,7 @@ export const allDbState = {
 
 export default {
     allDb : createReducer(allDbState, {
-        [ActionTypes.ALL_DB_LOAD_SUCCESS](state, {payload}) {
+        [ActionTypes.VIEWS.ALL_DB.ALL_DB_LOAD_SUCESS](state, {payload}) {
             return Object.freeze({
                 ...state,
                 storedProcs: payload.storedProcs,

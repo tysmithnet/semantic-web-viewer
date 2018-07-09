@@ -5,26 +5,32 @@ import keyMirror from 'fbjs/lib/keyMirror';
  * @desc App constants
  */
 
-/**
- * @constant {Object} ActionTypes
- * @memberof Constants
- */
-export const ActionTypes = keyMirror({
-  USER_LOGIN_REQUEST: undefined,
-  USER_LOGIN_SUCCESS: undefined,
-  USER_LOGIN_FAILURE: undefined,
-  USER_LOGOUT_REQUEST: undefined,
-  USER_LOGOUT_SUCCESS: undefined,
-  USER_LOGOUT_FAILURE: undefined,
-  GITHUB_GET_REPOS_REQUEST: undefined,
-  GITHUB_GET_REPOS_SUCCESS: undefined,
-  GITHUB_GET_REPOS_FAILURE: undefined,
-  SHOW_ALERT: undefined,
-  HIDE_ALERT: undefined,
-  ALL_DB_LOAD_REQUEST: undefined,
-  ALL_DB_LOAD_SUCCESS: undefined,
-  ALL_DB_LOAD_FAILURE: undefined
-});
+export const ActionTypes = {
+  USER: {
+    USER_LOGIN_REQUEST: "USER.USER_LOGIN_REQUEST",
+    USER_LOGIN_SUCCESS: "USER.USER_LOGIN_SUCCESS",
+    USER_LOGIN_FAILURE: "USER.USER_LOGIN_FAILURE",
+    USER_LOGOUT_REQUEST: "USER.USER_LOGOUT_REQUEST",
+    USER_LOGOUT_SUCCESS: "USER.USER_LOGOUT_SUCCESS",
+    USER_LOGOUT_FAILURE: "USER.USER_LOGOUT_FAILURE",
+  },
+  GITHUB: {
+    GITHUB_GET_REPOS_REQUEST: "GITHUB.GITHUB_GET_REPOS_REQUEST",
+    GITHUB_GET_REPOS_SUCCESS: "GITHUB.GITHUB_GET_REPOS_SUCCESS",
+    GITHUB_GET_REPOS_FAILURE: "GITHUB.GITHUB_GET_REPOS_FAILURE",
+  },
+  ALERT: {
+    SHOW_ALERT: "ALERT.SHOW_ALERT",
+    HIDE_ALERT: "ALERT.HIDE_ALERT",
+  },
+  VIEWS: {
+    ALL_DB: {
+      ALL_DB_LOAD_REQUEST: "ALL_DB.ALL_DB_LOAD_REQUEST",
+      ALL_DB_LOAD_SUCESS: "ALL_DB.ALL_DB_LOAD_SUCESS",
+      ALL_DB_LOAD_FAILURE: "ALL_DB.ALL_DB_LOAD_FAILURE"
+    }
+  }
+}
 
 /**
  * @constant {Object} XHR

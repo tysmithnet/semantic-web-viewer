@@ -9,12 +9,12 @@ describe('App', () => {
     expect(reducer.app(app, {})).toMatchSnapshot();
   });
 
-  it(`should handle ${ActionTypes.SHOW_ALERT}`, () => {
+  it(`should handle ${ActionTypes.ALERT.SHOW_ALERT}`, () => {
     app = reducer.app(app, showAlert('HELLO', { id: 'test', type: 'success' }));
     expect(app).toMatchSnapshot();
   });
 
-  it(`should handle ${ActionTypes.HIDE_ALERT}`, () => {
+  it(`should handle ${ActionTypes.ALERT.HIDE_ALERT}`, () => {
     app = reducer.app(app, hideAlert('test'));
     expect(app).toMatchSnapshot();
   });

@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
-import {Field, reduxForm} from 'redux-form';
 import ForceGraph3D from '3d-force-graph';
 import {ActionTypes} from '../../constants';
 
@@ -21,7 +20,7 @@ export class AllDb extends React.Component {
     componentWillMount() {
         this
             .props
-            .dispatch({type: ActionTypes.ALL_DB_LOAD_REQUEST});
+            .dispatch({type: ActionTypes.VIEWS.ALL_DB.ALL_DB_LOAD_REQUEST});
     }
 
     componentDidUpdate() {

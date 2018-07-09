@@ -18,7 +18,7 @@ describe('user', () => {
     expectSaga(login)
       .call(delay, 400)
       .put({
-        type: ActionTypes.USER_LOGIN_SUCCESS,
+        type: ActionTypes.USER.USER_LOGIN_SUCCESS,
       })
       .run(500)
   );
@@ -27,7 +27,7 @@ describe('user', () => {
     expectSaga(logout)
       .call(delay, 200)
       .put({
-        type: ActionTypes.USER_LOGOUT_SUCCESS,
+        type: ActionTypes.USER.USER_LOGOUT_SUCCESS,
       })
       .run()
   );

@@ -15,14 +15,14 @@ export default {
         alerts: { $set: [] },
       });
     },
-    [ActionTypes.HIDE_ALERT](state, { payload: { id } }) {
+    [ActionTypes.ALERT.HIDE_ALERT](state, { payload: { id } }) {
       const alerts = state.alerts.filter(d => d.id !== id);
 
       return immutable(state, {
         alerts: { $set: alerts },
       });
     },
-    [ActionTypes.SHOW_ALERT](state, { payload }) {
+    [ActionTypes.ALERT.SHOW_ALERT](state, { payload }) {
       return immutable(state, {
         alerts: { $push: [payload] },
       });

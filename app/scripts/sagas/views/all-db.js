@@ -187,7 +187,7 @@ function * loadDataAsync() {
             }
         };
         yield put({
-            type: ActionTypes.ALL_DB_LOAD_SUCCESS,
+            type: ActionTypes.VIEWS.ALL_DB.ALL_DB_LOAD_SUCESS,
             payload: {
                 storedProcs: allProcs.results.bindings,
                 relations: procTableRelationships.results.bindings,
@@ -196,14 +196,10 @@ function * loadDataAsync() {
         });
     }
     catch(error) {
-        yield put({type: ActionTypes.ALL_DB_LOAD_FAILURE})
+        yield put({type: ActionTypes.VIEWS.ALL_DB.ALL_DB_LOAD_FAILURE})
     }
 }
 
-export function * watchLoadDataAsync() {
-    yield takeLatest()
-}
-
 export default function * root() {
-    yield all([takeLatest(ActionTypes.ALL_DB_LOAD_REQUEST, loadDataAsync)])
+    yield all([takeLatest(ActionTypes.VIEWS.ALL_DB.ALL_DB_LOAD_REQUEST, loadDataAsync)])
 }
