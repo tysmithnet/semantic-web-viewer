@@ -6,7 +6,8 @@ export const allDbState = {
     storedProcs: null,
     tables: null,
     relations: null,
-    loaded: false
+    loaded: false,
+    isGraphView: true,
 };
 
 export default {
@@ -18,6 +19,12 @@ export default {
                 tables: payload.tables,
                 relations: payload.relations,
                 loaded: true
+            });
+        },
+        [ActionTypes.VIEWS.ALL_DB.ALL_DB_TOGGLE_GRAPH_VIEW](state, {payload}) {
+            return Object.freeze({
+                ...state,
+                isGraphView: payload
             });
         }
     })

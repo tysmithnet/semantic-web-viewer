@@ -3,6 +3,8 @@ import React from 'react';
 import {connect} from 'react-redux';
 import ForceGraph3D from '3d-force-graph';
 import {ActionTypes} from '../../constants';
+import {toggleGraphView} from 'actions/views/all-db';
+import cx from 'classnames';
 
 export class AllDb extends React.Component {
     static propTypes = {
@@ -12,9 +14,7 @@ export class AllDb extends React.Component {
     constructor(props) {
         super(props);
         this.graphRef = React.createRef();
-        this.state = {
-          isGraphView: true
-        }
+        this.handleGraphDataViewToggle = this.handleGraphDataViewToggle.bind(this);
     }
 
     componentWillMount() {
@@ -24,7 +24,7 @@ export class AllDb extends React.Component {
     }
 
     componentDidUpdate() {
-        if (this.props.loaded && this.graphRef && !this.graph) {
+        if (this && this.props && this.props.loaded && this.graphRef && !this.graph) {
             const procNodes = this
                 .props
                 .storedProcs
@@ -55,7 +55,7 @@ export class AllDb extends React.Component {
             this.graph = new ForceGraph3D();
             this
                 .graph(this.graphRef.current)
-                .width(this.graphRef.current.getBoundingClientRect().width)
+                .width(window.innerWidth * .7) // from styless
                 .height(window.innerHeight)
                 .graphData({nodes: this.nodes, links: this.links});
         }
@@ -64,31 +64,22 @@ export class AllDb extends React.Component {
     loadData() {}
 
     handleGraphDataViewToggle(event) {
-        this.setState({...this.state, isGraphView: event.target.checked});
+        this.props.dispatch(toggleGraphView(!event.target.checked));
     }
 
     render() {
         if (this.props.loaded) {
             let output;
-            if(this.state.isGraphView) {
-                output = (
-                    <div className="graph" >
-                    <div ref={this.graphRef}></div>
-                    </div>
-                )
-            }
-            else {
-                output = (
-                    <div className="data">datatataat</div>
-                )
-            }
             return (
                 <div className="all-db">
                     <div className="controls">
-                       Graph View: <input type="checkbox" onChange={this.handleGraphDataViewToggle} />
+                       Graph View: <input type="checkbox" onChange={this.handleGraphDataViewToggle} defaultChecked={this.props.isGraphView} />
                     </div>
                     <div className="output">
-                       {output}
+                        <div className={cx('graph', {'hidden': this.props.isGraphView})} >
+                            <div ref={this.graphRef}></div>
+                        </div>
+                        <div className={cx('data', {'hidden': !this.props.isGraphView})}>datatataat</div>
                     </div>
                 </div>
             );
@@ -100,7 +91,7 @@ export class AllDb extends React.Component {
 
 /* istanbul ignore next */
 function mapStateToProps(state) {
-    return {storedProcs: state.allDb.storedProcs, loaded: state.allDb.loaded, tables: state.allDb.tables, relations: state.allDb.relations};
+    return {storedProcs: state.allDb.storedProcs, loaded: state.allDb.loaded, tables: state.allDb.tables, relations: state.allDb.relations, isGraphView: state.allDb.isGraphView};
 }
 
 export default connect(mapStateToProps)(AllDb);
