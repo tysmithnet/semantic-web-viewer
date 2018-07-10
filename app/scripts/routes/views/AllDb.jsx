@@ -3,9 +3,10 @@ import React from 'react';
 import {connect} from 'react-redux';
 import ForceGraph3D from '3d-force-graph';
 import {ActionTypes} from '../../constants';
-import {toggleGraphView} from 'actions/views/all-db';
+import {toggleGraphView, setStoredProcedureSelection} from 'actions/views/all-db';
 import cx from 'classnames';
 import {v4} from "uuid";
+import {Grid, Row, Col, FormGroup, FormControl, ControlLabel, HelpBlock} from 'react-bootstrap';
 
 export class AllDb extends React.Component {
     static propTypes = {
@@ -16,7 +17,7 @@ export class AllDb extends React.Component {
         super(props);
         this.graphRef = React.createRef();
         this.handleGraphDataViewToggle = this.handleGraphDataViewToggle.bind(this);
-        this.handleStoredProcedureSelected = this.handleStoredProcedureSelected.bind(this);
+        this.handleStoredProcSelectionChanged = this.handleStoredProcSelectionChanged.bind(this);
     }
 
     componentWillMount() {
@@ -57,6 +58,8 @@ export class AllDb extends React.Component {
             this.graph = new ForceGraph3D();
             this
                 .graph(this.graphRef.current)
+                .nodeAutoColorBy(n => n.type)
+                .linkAutoColorBy(l => l.type)
                 .width(window.innerWidth * .7) // from styless
                 .height(window.innerHeight)
                 .graphData({nodes: this.nodes, links: this.links});
@@ -68,15 +71,11 @@ export class AllDb extends React.Component {
         this.props.dispatch(toggleGraphView(event.target.checked));
     }
 
-    handleStoredProcedureSelected(event) {
-        const options = event.target.options;
-        const values = options.filter(o => o.selected).map(o => o.value);
-        this.props.dispatch(setStoredProcedureSelection(values));
-    }
-
     render() {
         if (this.props.loaded) {
-            
+            if(this.props.selectedStoredProcedures && this.graph) {
+                
+            }
             return (
                 <div className="all-db">
                     <div className="controls">
@@ -97,6 +96,18 @@ export class AllDb extends React.Component {
         }
     }
 
+    handleStoredProcSelectionChanged(event) {
+        const selected = [];
+        if(event && event.target && event.target.options) {
+            for(let i = 0; i < event.target.options.length; i++) {
+                const option  = event.target.options[i];
+                if(option.selected)
+                    selected.push(option.value);
+            }
+        }
+        this.props.dispatch(setStoredProcedureSelection(selected));
+    }
+
     renderControls() {
         function createProcOption(storedProc) {
             return (<option key={storedProc.sp.value}>
@@ -111,24 +122,18 @@ export class AllDb extends React.Component {
         }
 
         return (
-            <div>
-                Graph View: <input type="checkbox" onChange={this.handleGraphDataViewToggle} defaultChecked={this.props.isGraphView} /><br />
-                Stored Procs: 
-                <select multiple autocomplete onChange={this.handleStoredProcedureSelected}>
-                    {this.props.storedProcs.map(createProcOption)}
-                </select><br/>
-                Relation: 
-                <select multiple autocomplete>
-                    <option value="http://example.com/rel/select">Select</option>
-                    <option value="http://example.com/rel/insert">Insert</option>
-                    <option value="http://example.com/rel/update">Update</option>
-                    <option value="http://example.com/rel/delete">Delete</option>
-                </select><br/>
-                Tables: 
-                <select multiple autocomplete>
-                    {this.props.tables.map(createTableOption)}
-                </select>
-            </div>
+            <form>
+                <div className="container">
+                    <div className="col-sm-12">
+                    <FormGroup controlId="formControlsSelectMultiple">
+                        <ControlLabel>Multiple select</ControlLabel>
+                        <FormControl componentClass="select" multiple onChange={this.handleStoredProcSelectionChanged}>
+                            {this.props.storedProcs.map(createProcOption)}
+                        </FormControl>
+                    </FormGroup>
+                </div>
+                </div>
+          </form>       
         )
     }
 
