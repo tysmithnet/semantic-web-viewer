@@ -5,6 +5,7 @@ import ForceGraph3D from '3d-force-graph';
 import {ActionTypes} from '../../constants';
 import {toggleGraphView} from 'actions/views/all-db';
 import cx from 'classnames';
+import {v4} from "uuid";
 
 export class AllDb extends React.Component {
     static propTypes = {
@@ -29,21 +30,21 @@ export class AllDb extends React.Component {
                 .props
                 .storedProcs
                 .map(x => {
-                    return {id: x.sp.value, name: x.title.value, type: "storedProc"}; // todo: constant value
+                    return {key: v4(), id: x.sp.value, name: x.title.value, type: "storedProc"}; // todo: constant value
                 });
 
             const tableNodes = this
                 .props
                 .tables
                 .map(x => {
-                    return {id: x.tb.value, name: x.title.value, type: "table"}; // todo: constant value
+                    return {key: v4(), id: x.tb.value, name: x.title.value, type: "table"}; // todo: constant value
                 });
 
             const links = this
                 .props
                 .relations
                 .map(x => {
-                    return {source: x.sp.value, target: x.tb.value, type: x.rel.value}
+                    return {key: v4(), source: x.sp.value, target: x.tb.value, type: x.rel.value}
                 });
 
             this.nodes = [
@@ -79,7 +80,9 @@ export class AllDb extends React.Component {
                         <div className={cx('graph', {'hidden': !this.props.isGraphView})} >
                             <div ref={this.graphRef}></div>
                         </div>
-                        <div className={cx('data', {'hidden': this.props.isGraphView})}>datatataat</div>
+                        <div className={cx('data', {'hidden': this.props.isGraphView})}>
+                            {this.renderTable()}
+                        </div>
                     </div>
                 </div>
             );
@@ -89,20 +92,53 @@ export class AllDb extends React.Component {
     }
 
     renderTable() {
-        const rows = [];
         const seenProcs = {};
         const seenTables = {};
+        const rows = [];
+        
         for(let i = 0; i < this.props.relations.length; i++){
-            
+            const rel = this.props.relations[i];
+            seenProcs[rel.sp.value] = true;
+            seenTables[rel.tb.value] = true;
+            rows.push([rel.sp.value, rel.rel.value, rel.tb.value]);
         }
+
+        for(let i = 0; i < this.props.storedProcs.length; i++) {
+            const proc = this.props.storedProcs[i];
+            if(!seenProcs[proc.id])
+                rows.push([proc.id, null, null]);
+        }
+
+        for(let i = 0; i < this.props.tables.length; i++) {
+            const table = this.props.tables[i];
+            if(!table[table.id])
+                rows.push([null, null, table.id]);
+        }
+
+        for(let i = 0; i < rows.count; i++) {
+            rows[i].key = v4();
+        }
+
+        function renderRow(row, index) {
+            return (<tr key={row.key}>
+                <td>{row[0]}</td>
+                <td>{row[1]}</td>
+                <td>{row[2]}</td>
+            </tr>)
+        }
+
         return (
             <table>
+                <thead>
                 <tr>
                     <th>Stored Procedure</th>
                     <th>Operation</th>
                     <th>Table</th>
                 </tr>
-                {this.props.storedProcs}
+                </thead>
+                <tbody>
+                    {rows.map(renderRow)}
+                </tbody>
             </table>
         );
     }
