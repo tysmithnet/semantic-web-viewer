@@ -13,61 +13,7 @@ function * loadDataAsync() {
             },
             "results": {
                 "bindings": [
-                    {
-                        "sp": {
-                            "type": "uri",
-                            "value": "http://example.org/sp/sp_a"
-                        },
-                        "title": {
-                            "type": "literal",
-                            "value": "Proc A"
-                        }
-                    }, {
-                        "sp": {
-                            "type": "uri",
-                            "value": "http://example.org/sp/sp_b"
-                        },
-                        "title": {
-                            "type": "literal",
-                            "value": "Proc B"
-                        }
-                    }, {
-                        "sp": {
-                            "type": "uri",
-                            "value": "http://example.org/sp/sp_c"
-                        },
-                        "title": {
-                            "type": "literal",
-                            "value": "Proc C"
-                        }
-                    }, {
-                        "sp": {
-                            "type": "uri",
-                            "value": "http://example.org/sp/sp_d"
-                        },
-                        "title": {
-                            "type": "literal",
-                            "value": "Proc D"
-                        }
-                    }, {
-                        "sp": {
-                            "type": "uri",
-                            "value": "http://example.org/sp/sp_e"
-                        },
-                        "title": {
-                            "type": "literal",
-                            "value": "Proc E"
-                        }
-                    }, {
-                        "sp": {
-                            "type": "uri",
-                            "value": "http://example.org/sp/sp_f"
-                        },
-                        "title": {
-                            "type": "literal",
-                            "value": "Proc F"
-                        }
-                    }
+                 
                 ]
             }
         };
@@ -78,61 +24,6 @@ function * loadDataAsync() {
             },
             "results": {
                 "bindings": [
-                    {
-                        "tb": {
-                            "type": "uri",
-                            "value": "http://example.org/tb/tb_a"
-                        },
-                        "title": {
-                            "type": "literal",
-                            "value": "Table A"
-                        }
-                    }, {
-                        "tb": {
-                            "type": "uri",
-                            "value": "http://example.org/tb/tb_b"
-                        },
-                        "title": {
-                            "type": "literal",
-                            "value": "Table B"
-                        }
-                    }, {
-                        "tb": {
-                            "type": "uri",
-                            "value": "http://example.org/tb/tb_c"
-                        },
-                        "title": {
-                            "type": "literal",
-                            "value": "Table C"
-                        }
-                    }, {
-                        "tb": {
-                            "type": "uri",
-                            "value": "http://example.org/tb/tb_d"
-                        },
-                        "title": {
-                            "type": "literal",
-                            "value": "Table D"
-                        }
-                    }, {
-                        "tb": {
-                            "type": "uri",
-                            "value": "http://example.org/tb/tb_e"
-                        },
-                        "title": {
-                            "type": "literal",
-                            "value": "Table E"
-                        }
-                    }, {
-                        "tb": {
-                            "type": "uri",
-                            "value": "http://example.org/tb/tb_f"
-                        },
-                        "title": {
-                            "type": "literal",
-                            "value": "Table F"
-                        }
-                    }
                 ]
             }
         };
@@ -143,49 +34,83 @@ function * loadDataAsync() {
             },
             "results": {
                 "bindings": [
-                    {
-                        "sp": {
-                            "type": "uri",
-                            "value": "http://example.org/sp/sp_a"
-                        },
-                        "rel": {
-                            "type": "uri",
-                            "value": "http://example.org/rel/write"
-                        },
-                        "tb": {
-                            "type": "uri",
-                            "value": "http://example.org/tb/tb_a"
-                        }
-                    }, {
-                        "sp": {
-                            "type": "uri",
-                            "value": "http://example.org/sp/sp_a"
-                        },
-                        "rel": {
-                            "type": "uri",
-                            "value": "http://example.org/rel/read"
-                        },
-                        "tb": {
-                            "type": "uri",
-                            "value": "http://example.org/tb/tb_a"
-                        }
-                    }, {
-                        "sp": {
-                            "type": "uri",
-                            "value": "http://example.org/sp/sp_b"
-                        },
-                        "rel": {
-                            "type": "uri",
-                            "value": "http://example.org/rel/write"
-                        },
-                        "tb": {
-                            "type": "uri",
-                            "value": "http://example.org/tb/tb_c"
-                        }
-                    }
                 ]
             }
         };
+
+        const numProcs = 200;
+        const numTables = 500;
+        const numRelations = 600;
+
+        for(let i = 0; i < numProcs; i++) {
+            const sp = {
+                "sp": {
+                    "type": "uri",
+                    "value": "http://example.org/sp/sp_" + i
+                },
+                "title": {
+                    "type": "literal",
+                    "value": "Proc " + i
+                }
+            };
+            allProcs.results.bindings.push(sp);
+        }
+
+        for(let i = 0; i < numTables; i++) {
+            const tb = {
+                "tb": {
+                    "type": "uri",
+                    "value": "http://example.org/tb/tb_" + i
+                },
+                "title": {
+                    "type": "literal",
+                    "value": "Table " + i
+                }
+            };
+            allTables.results.bindings.push(tb);
+        }
+
+        const operations = ['insert', 'update', 'delete', 'select']
+        const map = {};
+        for(let i = 0; i < numRelations; i++) {
+            const a = Math.floor(Math.random() * numProcs);
+            const b = operations[i % operations.length];
+            const c = Math.floor(Math.random() * numTables);
+
+
+            if(!map[`sp_${a}`] == null)
+                map[`sp_${a}`] = 0;
+
+            if(++map[`sp_${a}`] > 10){
+                i--;
+                continue;
+            }
+
+            if(map[`tb_${c}}`] == null)
+                map[`tb_${c}}`] = 0;
+            
+            if(++map[`tb_${c}}`] > 50) {
+                i--;
+                continue;
+            }
+
+            const rel = {
+                "sp": {
+                    "type": "uri",
+                    "value": "http://example.org/sp/sp_" + a
+                },
+                "rel": {
+                    "type": "uri",
+                    "value": "http://example.org/rel/" + b
+                },
+                "tb": {
+                    "type": "uri",
+                    "value": "http://example.org/tb/tb_" + c
+                }
+            }
+            procTableRelationships.results.bindings.push(rel);
+        }
+
         yield put({
             type: ActionTypes.VIEWS.ALL_DB.ALL_DB_LOAD_SUCESS,
             payload: {
