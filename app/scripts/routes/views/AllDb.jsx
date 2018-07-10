@@ -16,12 +16,13 @@ export class AllDb extends React.Component {
         super(props);
         this.graphRef = React.createRef();
         this.handleGraphDataViewToggle = this.handleGraphDataViewToggle.bind(this);
+        this.handleStoredProcedureSelected = this.handleStoredProcedureSelected.bind(this);
     }
 
     componentWillMount() {
         this
             .props
-            .dispatch({type: ActionTypes.VIEWS.ALL_DB.ALL_DB_LOAD_REQUEST});
+            .dispatch({type: ActionTypes.VIEWS.ALL_DB.ALL_DB_LOAD_REQUEST}); // todo: make action
     }
 
     componentDidUpdate() {
@@ -62,10 +63,15 @@ export class AllDb extends React.Component {
         }
     }
 
-    loadData() {}
 
     handleGraphDataViewToggle(event) {
         this.props.dispatch(toggleGraphView(event.target.checked));
+    }
+
+    handleStoredProcedureSelected(event) {
+        const options = event.target.options;
+        const values = options.filter(o => o.selected).map(o => o.value);
+        this.props.dispatch(setStoredProcedureSelection(values));
     }
 
     render() {
@@ -108,8 +114,15 @@ export class AllDb extends React.Component {
             <div>
                 Graph View: <input type="checkbox" onChange={this.handleGraphDataViewToggle} defaultChecked={this.props.isGraphView} /><br />
                 Stored Procs: 
-                <select multiple autocomplete>
+                <select multiple autocomplete onChange={this.handleStoredProcedureSelected}>
                     {this.props.storedProcs.map(createProcOption)}
+                </select><br/>
+                Relation: 
+                <select multiple autocomplete>
+                    <option value="http://example.com/rel/select">Select</option>
+                    <option value="http://example.com/rel/insert">Insert</option>
+                    <option value="http://example.com/rel/update">Update</option>
+                    <option value="http://example.com/rel/delete">Delete</option>
                 </select><br/>
                 Tables: 
                 <select multiple autocomplete>

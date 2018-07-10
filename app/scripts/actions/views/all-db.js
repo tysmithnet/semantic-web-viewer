@@ -6,3 +6,10 @@ export function toggleGraphView(isGraphView) {
         payload: isGraphView
     }
 }
+
+export function setStoredProcedureSelection(procIds) {
+    return {
+        type: ActionTypes.VIEWS.ALL_DB.ALL_DB_STORED_PROC_SELECTION_CHANGED,
+        payload: procIds
+    }
+}
