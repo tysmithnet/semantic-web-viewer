@@ -70,11 +70,11 @@ export class AllDb extends React.Component {
 
     render() {
         if (this.props.loaded) {
-            let output;
+            
             return (
                 <div className="all-db">
                     <div className="controls">
-                       Graph View: <input type="checkbox" onChange={this.handleGraphDataViewToggle} defaultChecked={this.props.isGraphView} />
+                        {this.renderControls()}
                     </div>
                     <div className="output">
                         <div className={cx('graph', {'hidden': !this.props.isGraphView})} >
@@ -89,6 +89,24 @@ export class AllDb extends React.Component {
         } else {
             return <span>Loading..</span>
         }
+    }
+
+    renderControls() {
+        function createOption(storedProc) {
+            return (<option key={storedProc.sp.value}>
+                {storedProc.title.value}
+            </option>);
+        }
+
+        return (
+            <div>
+                Graph View: <input type="checkbox" onChange={this.handleGraphDataViewToggle} defaultChecked={this.props.isGraphView} /><br />
+                Stored Procs: 
+                <select multiple autocomplete>
+                    {this.props.storedProcs.map(createOption)}
+                </select>
+            </div>
+        )
     }
 
     renderTable() {
