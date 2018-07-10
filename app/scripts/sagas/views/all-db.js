@@ -72,43 +72,36 @@ function * loadDataAsync() {
 
         const operations = ['insert', 'update', 'delete', 'select']
         const map = {};
-        for(let i = 0; i < numRelations; i++) {
-            const a = Math.floor(Math.random() * numProcs);
-            const b = operations[i % operations.length];
-            const c = Math.floor(Math.random() * numTables);
 
+        for(let i = 0; i < numProcs; i++) {
+            const numLinks = Math.floor(Math.random() * 10)
 
-            if(!map[`sp_${a}`] == null)
-                map[`sp_${a}`] = 0;
+            for(let j = 0; j < numLinks; j++) {
+                const b = operations[i % operations.length];
+                const c = Math.floor(Math.random() * numTables);
+                if(map[`tb_${c}}`] == 0)
+                    map[`tb_${c}}`] = 0;
 
-            if(++map[`sp_${a}`] > 10){
-                i--;
-                continue;
-            }
-
-            if(map[`tb_${c}}`] == null)
-                map[`tb_${c}}`] = 0;
-            
-            if(++map[`tb_${c}}`] > 50) {
-                i--;
-                continue;
-            }
-
-            const rel = {
-                "sp": {
-                    "type": "uri",
-                    "value": "http://example.org/sp/sp_" + a
-                },
-                "rel": {
-                    "type": "uri",
-                    "value": "http://example.org/rel/" + b
-                },
-                "tb": {
-                    "type": "uri",
-                    "value": "http://example.org/tb/tb_" + c
+                if(++map[`tb_${c}}`] > 50) {
+                    j--;
+                    continue;
                 }
+                const rel = {
+                    "sp": {
+                        "type": "uri",
+                        "value": "http://example.org/sp/sp_" + i
+                    },
+                    "rel": {
+                        "type": "uri",
+                        "value": "http://example.org/rel/" + b
+                    },
+                    "tb": {
+                        "type": "uri",
+                        "value": "http://example.org/tb/tb_" + c
+                    }
+                }
+                procTableRelationships.results.bindings.push(rel);            
             }
-            procTableRelationships.results.bindings.push(rel);
         }
 
         yield put({
