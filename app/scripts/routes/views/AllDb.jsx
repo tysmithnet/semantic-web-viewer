@@ -64,7 +64,7 @@ export class AllDb extends React.Component {
     loadData() {}
 
     handleGraphDataViewToggle(event) {
-        this.props.dispatch(toggleGraphView(!event.target.checked));
+        this.props.dispatch(toggleGraphView(event.target.checked));
     }
 
     render() {
