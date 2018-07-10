@@ -76,10 +76,10 @@ export class AllDb extends React.Component {
                        Graph View: <input type="checkbox" onChange={this.handleGraphDataViewToggle} defaultChecked={this.props.isGraphView} />
                     </div>
                     <div className="output">
-                        <div className={cx('graph', {'hidden': this.props.isGraphView})} >
+                        <div className={cx('graph', {'hidden': !this.props.isGraphView})} >
                             <div ref={this.graphRef}></div>
                         </div>
-                        <div className={cx('data', {'hidden': !this.props.isGraphView})}>datatataat</div>
+                        <div className={cx('data', {'hidden': this.props.isGraphView})}>datatataat</div>
                     </div>
                 </div>
             );
