@@ -87,6 +87,25 @@ export class AllDb extends React.Component {
             return <span>Loading..</span>
         }
     }
+
+    renderTable() {
+        const rows = [];
+        const seenProcs = {};
+        const seenTables = {};
+        for(let i = 0; i < this.props.relations.length; i++){
+            
+        }
+        return (
+            <table>
+                <tr>
+                    <th>Stored Procedure</th>
+                    <th>Operation</th>
+                    <th>Table</th>
+                </tr>
+                {this.props.storedProcs}
+            </table>
+        );
+    }
 }
 
 /* istanbul ignore next */
