@@ -92,9 +92,15 @@ export class AllDb extends React.Component {
     }
 
     renderControls() {
-        function createOption(storedProc) {
+        function createProcOption(storedProc) {
             return (<option key={storedProc.sp.value}>
                 {storedProc.title.value}
+            </option>);
+        }
+
+        function createTableOption(table) {
+            return (<option key={table.tb.id}>
+                {table.title.value}
             </option>);
         }
 
@@ -103,7 +109,11 @@ export class AllDb extends React.Component {
                 Graph View: <input type="checkbox" onChange={this.handleGraphDataViewToggle} defaultChecked={this.props.isGraphView} /><br />
                 Stored Procs: 
                 <select multiple autocomplete>
-                    {this.props.storedProcs.map(createOption)}
+                    {this.props.storedProcs.map(createProcOption)}
+                </select><br/>
+                Tables: 
+                <select multiple autocomplete>
+                    {this.props.tables.map(createTableOption)}
                 </select>
             </div>
         )
