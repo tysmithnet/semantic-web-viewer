@@ -66,7 +66,6 @@ export class AllDb extends React.Component {
         }
     }
 
-
     handleGraphDataViewToggle(event) {
         this.props.dispatch(toggleGraphView(event.target.checked));
     }
@@ -74,7 +73,14 @@ export class AllDb extends React.Component {
     render() {
         if (this.props.loaded) {
             if(this.props.selectedStoredProcedures && this.graph) {
-                
+                this.graph.nodes().forEach(n => {
+                    if(this.props.selectedStoredProcedures.indexOf(n.id) >= 0) {
+                        n.nodeOpacity(1);
+                    }
+                    else {
+                        n.nodeOpacity(.25);
+                    }
+                });
             }
             return (
                 <div className="all-db">
@@ -192,7 +198,7 @@ export class AllDb extends React.Component {
 
 /* istanbul ignore next */
 function mapStateToProps(state) {
-    return {storedProcs: state.allDb.storedProcs, loaded: state.allDb.loaded, tables: state.allDb.tables, relations: state.allDb.relations, isGraphView: state.allDb.isGraphView};
+    return {storedProcs: state.allDb.storedProcs, loaded: state.allDb.loaded, tables: state.allDb.tables, relations: state.allDb.relations, isGraphView: state.allDb.isGraphView, selectedStoredProcedures: state.allDb.selectedStoredProcedures};
 }
 
 export default connect(mapStateToProps)(AllDb);
