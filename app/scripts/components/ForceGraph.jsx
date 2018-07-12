@@ -28,15 +28,12 @@ export default class ForceGraph extends React.Component {
   static getDerivedStateFromProps(props, state) {
   }
 
-  shouldComponentUpdate() {
+  shouldComponentUpdate(nextProps, nextState) {
     if(this.graph) {
       this.graph.graphData().nodes.forEach(n => {
-        if(this.props.selectedNodes && this.props.selectedNodes.length) {
-          if(this.props.selectedNodes.indexOf(n.name) >= 0) { // todo: don't like that we use name here
-            const material = n.__threeObj.material;
+        if(nextProps.selectedNodes && nextProps.selectedNodes.length) {
+          if(nextProps.selectedNodes.indexOf(n.name) >= 0 && !n.glow) { // todo: don't like that we use name here
             const geometry = n.__threeObj.geometry;
-            const position = n.__threeObj.position;
-            const scene = this.graph.scene();
             const camera = this.graph.camera();
             var customMaterial = new ShaderMaterial( 
               {
@@ -55,23 +52,26 @@ export default class ForceGraph extends React.Component {
               }   );
                 
               const glow = new Mesh(geometry.clone(), customMaterial.clone() );
-              glow.scale.multiplyScalar(1.2);
+              glow.scale.multiplyScalar(1.5);
               n.__threeObj.add(glow);
+              n.glow = glow;
           }
           else {
-
+            if(n.glow) {
+              n.__threeObj.remove(n.glow);
+              delete n.glow;
+            }
           }
         }
         else {
-
+          if(n.glow) {
+            n.__threeObj.remove(n.glow);
+            delete n.glow;
+          }
         }
       });
     }
     return false;
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-
   }
 
   componentDidMount(){
