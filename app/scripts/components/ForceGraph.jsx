@@ -1,41 +1,55 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+import {connect} from 'react-redux';
+import ForceGraph3D from '3d-force-graph';
+import {ActionTypes} from 'constants';
+import {toggleGraphView, setStoredProcedureSelection} from 'actions/views/all-db';
+import cx from 'classnames';
+import {v4} from "uuid";
+import {Grid, Row, Col, FormGroup, FormControl, ControlLabel, HelpBlock} from 'react-bootstrap';
 
-import { logOut } from 'actions';
-import Logo from 'components/Logo';
 
-export default class Header extends React.Component {
+export default class ForceGraph extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+    nodes: PropTypes.array,
+    links: PropTypes.array
   };
 
-  handleClickLogout = e => {
-    e.preventDefault();
-    const { dispatch } = this.props;
+  constructor(props) {
+    super(props);
+    this.graphRef = React.createRef();
+    this.graph = null;
+    console.log("constructor")
+    console.dir(props);
+  }
 
-    dispatch(logOut());
-  };
+  shouldComponentUpdate() {
+    console.log("should component update");
+  }
 
   componentDidMount(){
+    console.log("component did mount")
+    console.dir(this.props)
+    if(this.props.nodes) {
       
+      this.graph = new ForceGraph3D();
+      this
+          .graph(this.graphRef.current)
+          .nodeAutoColorBy(n => n.type)
+          .linkAutoColorBy(l => l.type)
+          .width(this.props.width) // from styless
+          .height(this.props.height)
+          .graphData({nodes: this.props.nodes, links: this.props.links});
+      console.dir(this.graph);
+    }
   }
 
   render() {
     return (
-      <header className="app__header">
-        <div className="app__container">
-          <Logo />
-          <div className="app__header__menu">
-            <ul className="list-unstyled">
-              <li>
-                <a href="#logout" className="app__logout" onClick={this.handleClickLogout}>
-                  <span>logout</span><i className="i-sign-out" />
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </header>
+      <div ref={this.graphRef}></div>
     );
   }
 }

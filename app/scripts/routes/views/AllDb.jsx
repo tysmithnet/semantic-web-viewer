@@ -7,6 +7,7 @@ import {toggleGraphView, setStoredProcedureSelection} from 'actions/views/all-db
 import cx from 'classnames';
 import {v4} from "uuid";
 import {Grid, Row, Col, FormGroup, FormControl, ControlLabel, HelpBlock} from 'react-bootstrap';
+import ForceGraph from 'components/ForceGraph';
 
 export class AllDb extends React.Component {
     static propTypes = {
@@ -15,7 +16,6 @@ export class AllDb extends React.Component {
 
     constructor(props) {
         super(props);
-        this.graphRef = React.createRef();
         this.handleGraphDataViewToggle = this.handleGraphDataViewToggle.bind(this);
         this.handleStoredProcSelectionChanged = this.handleStoredProcSelectionChanged.bind(this);
     }
@@ -28,7 +28,38 @@ export class AllDb extends React.Component {
 
     componentDidUpdate() {
         if (this && this.props && this.props.loaded && this.graphRef && !this.graph) {
-            const procNodes = this
+            
+        }
+    }
+
+    handleGraphDataViewToggle(event) {
+        this.props.dispatch(toggleGraphView(event.target.checked));
+    }
+
+    render() {
+        if (this.props.loaded) {
+            return (
+                <div className="all-db">
+                    <div className="controls">
+                        {this.renderControls()}
+                    </div>
+                    <div className="output">
+                        <div className={cx('graph', {'hidden': !this.props.isGraphView})} >
+                            {this.renderGraph()}
+                        </div>
+                        <div className={cx('data', {'hidden': this.props.isGraphView})}>
+                            {this.renderTable()}
+                        </div>
+                    </div>
+                </div>
+            );
+        } else {
+            return <span>Loading..</span>
+        }
+    }
+
+    renderGraph(){
+        const procNodes = this
                 .props
                 .storedProcs
                 .map(x => {
@@ -54,52 +85,7 @@ export class AllDb extends React.Component {
                 ...tableNodes
             ];
             this.links = links;
-
-            this.graph = new ForceGraph3D();
-            this
-                .graph(this.graphRef.current)
-                .nodeAutoColorBy(n => n.type)
-                .linkAutoColorBy(l => l.type)
-                .width(window.innerWidth * .7) // from styless
-                .height(window.innerHeight)
-                .graphData({nodes: this.nodes, links: this.links});
-        }
-    }
-
-    handleGraphDataViewToggle(event) {
-        this.props.dispatch(toggleGraphView(event.target.checked));
-    }
-
-    render() {
-        if (this.props.loaded) {
-            if(this.props.selectedStoredProcedures && this.graph) {
-                this.graph.nodes().forEach(n => {
-                    if(this.props.selectedStoredProcedures.indexOf(n.id) >= 0) {
-                        n.nodeOpacity(1);
-                    }
-                    else {
-                        n.nodeOpacity(.25);
-                    }
-                });
-            }
-            return (
-                <div className="all-db">
-                    <div className="controls">
-                        {this.renderControls()}
-                    </div>
-                    <div className="output">
-                        <div className={cx('graph', {'hidden': !this.props.isGraphView})} >
-                            <div ref={this.graphRef}></div>
-                        </div>
-                        <div className={cx('data', {'hidden': this.props.isGraphView})}>
-                            {this.renderTable()}
-                        </div>
-                    </div>
-                </div>
-            );
-        } else {
-            return <span>Loading..</span>
-        }
+        return <ForceGraph nodes={this.nodes} links={this.links} width={window.innerWidth * .7} height={window.innerHeight} />
     }
 
     handleStoredProcSelectionChanged(event) {

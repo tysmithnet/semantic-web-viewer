@@ -1,20 +1,22 @@
 Arguments: 
-  /usr/bin/node /usr/bin/yarn install
+  C:\Program Files\nodejs\node.exe C:\Users\master\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js
 
 PATH: 
-  /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+  C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Python27\;C:\Python27\Scripts;C:\Python35\Scripts\;C:\Python35\;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\ProgramData\chocolatey\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\LINQPad5;C:\Users\master\.dnx\bin;C:\Program Files\Microsoft DNX\Dnvm\;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files (x86)\Microsoft Emulator Manager\1.0\;C:\WINDOWS\SysWOW64\WindowsPowerShell\v1.0\Modules\TShell\TShell\;C:\Program Files\OpenSSH-Win64;C:\Program Files\dotnet\;C:\Program Files (x86)\Skype\Phone\;C:\Program Files (x86)\Yarn\bin;C:\Program Files (x86)\Streamlink\bin;C:\Program Files\Amazon\AWSCLI\;C:\Program Files\nodejs\;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\140\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\140\DTS\Binn\;C:\Program Files (x86)\Microsoft SQL Server\140\Tools\Binn\ManagementStudio\;C:\Program Files\Microsoft SQL Server\140\DTS\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\;C:\Program Files\Microsoft SQL Server\140\Tools\Binn\;C:\HashiCorp\Vagrant\bin;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Users\master\AppData\Local\atom\bin;C:\Program Files (x86)\OpenVPN\bin;C:\Users\master\AppData\Local\Microsoft\WindowsApps;C:\Program Files (x86)\Nmap;C:\Program Files\Oracle\VirtualBox;C:\Program Files (x86)\Windows Kits\10\Debuggers\x64;C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\winext;C:\Program Files\CMake\bin\;C:\Users\master\AppData\Local\Yarn\bin;C:\Windows\WinSxS\amd64_microsoft-windows-lxss-bash_31bf3856ad364e35_10.0.14393.351_none_79648c7a5a883c6f\;C:\Program Files (x86)\MSBuild\14.0\Bin\amd64;C:\Users\master\.nuget\packages\nuget.commandline\2.8.3\tools\;C:\Program Files\WindowsPowerShell\Modules\PSEverything\1.3.5;C:\Program Files\Microsoft VS Code\bin;C:\Users\master\AppData\Local\Programs\Fiddler;C:\Users\master\AppData\Roaming\npm;C:\Users\master\AppData\Local\Microsoft\WindowsApps;c:\msys64\usr\bin;c:\msys64\mingw64\bin;C:\Program Files\Docker Toolbox;C:\Program Files\Docker Toolbox
 
 Yarn version: 
-  1.7.0
+  1.6.0
 
 Node version: 
-  10.1.0
+  8.9.3
 
 Platform: 
-  linux x64
+  win32 x64
 
 Trace: 
-  Error: ETXTBSY: text file is busy, unlink '/vagrant/node_modules/cypress/dist/cypress.zip'
+  Error: getaddrinfo ENOTFOUND ci-master ci-master:4873
+      at errnoException (dns.js:50:10)
+      at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:92:26)
 
 npm manifest: 
   {
@@ -54,6 +56,7 @@ npm manifest:
       "prop-types": "^15.6.1",
       "qs": "^6.5.1",
       "react": "^16.2.0",
+      "react-bootstrap": "^0.32.1",
       "react-dom": "^16.2.0",
       "react-helmet": "^5.2.0",
       "react-inlinesvg": "^0.8.0",
@@ -68,7 +71,7 @@ npm manifest:
       "sass-mediaqueries": "^1.6.1",
       "scroll": "^2.0.3",
       "scroll-doc": "^0.2.1",
-      "uuid": "^3.2.1"
+      "uuid": "^3.3.2"
     },
     "devDependencies": {
       "autoprefixer": "^8.1.0",
@@ -1560,7 +1563,7 @@ Lockfile:
       mkdirp "^0.5.1"
       source-map-support "^0.4.15"
   
-  babel-runtime@^6.18.0, babel-runtime@^6.22.0, babel-runtime@^6.26.0:
+  babel-runtime@^6.11.6, babel-runtime@^6.18.0, babel-runtime@^6.22.0, babel-runtime@^6.26.0:
     version "6.26.0"
     resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
     dependencies:
@@ -3498,7 +3501,7 @@ Lockfile:
     dependencies:
       utila "~0.3"
   
-  dom-helpers@^3.3.1:
+  dom-helpers@^3.2.0, dom-helpers@^3.2.1, dom-helpers@^3.3.1:
     version "3.3.1"
     resolved "https://registry.yarnpkg.com/dom-helpers/-/dom-helpers-3.3.1.tgz#fc1a4e15ffdf60ddde03a480a9c0fece821dd4a6"
   
@@ -5788,7 +5791,7 @@ Lockfile:
     version "1.1.0"
     resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.1.0.tgz#7ed1b1410c6a0e0f78cf95d3b8440c63f78b8614"
   
-  invariant@^2.0.0, invariant@^2.2.0, invariant@^2.2.1, invariant@^2.2.2, invariant@^2.2.4:
+  invariant@^2.0.0, invariant@^2.1.0, invariant@^2.2.0, invariant@^2.2.1, invariant@^2.2.2, invariant@^2.2.4:
     version "2.2.4"
     resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
     dependencies:
@@ -6794,6 +6797,10 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/kapsule/-/kapsule-1.9.1.tgz#a9afc0f8c2fb71a0acb5a614fbe61955e3676378"
     dependencies:
       debounce "^1.1.0"
+  
+  keycode@^2.1.2:
+    version "2.2.0"
+    resolved "http://ci-master:4873/keycode/-/keycode-2.2.0.tgz#3d0af56dc7b8b8e5cba8d0a97f107204eec22b04"
   
   killable@^1.0.0:
     version "1.0.0"
@@ -9138,7 +9145,14 @@ Lockfile:
     dependencies:
       asap "~2.0.3"
   
-  prop-types@^15.5.4, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2:
+  prop-types-extra@^1.0.1:
+    version "1.1.0"
+    resolved "http://ci-master:4873/prop-types-extra/-/prop-types-extra-1.1.0.tgz#32609910ea2dcf190366bacd3490d5a6412a605f"
+    dependencies:
+      react-is "^16.3.2"
+      warning "^3.0.0"
+  
+  prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2:
     version "15.6.2"
     resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.2.tgz#05d5ca77b4453e985d60fc7ff8c859094a497102"
     dependencies:
@@ -9329,6 +9343,23 @@ Lockfile:
       minimist "^1.2.0"
       strip-json-comments "~2.0.1"
   
+  react-bootstrap@^0.32.1:
+    version "0.32.1"
+    resolved "http://ci-master:4873/react-bootstrap/-/react-bootstrap-0.32.1.tgz#60624c1b48a39d773ef6cce6421a4f33ecc166bb"
+    dependencies:
+      babel-runtime "^6.11.6"
+      classnames "^2.2.5"
+      dom-helpers "^3.2.0"
+      invariant "^2.2.1"
+      keycode "^2.1.2"
+      prop-types "^15.5.10"
+      prop-types-extra "^1.0.1"
+      react-overlays "^0.8.0"
+      react-prop-types "^0.4.0"
+      react-transition-group "^2.0.0"
+      uncontrollable "^4.1.0"
+      warning "^3.0.0"
+  
   react-dev-utils@^5.0.0:
     version "5.0.1"
     resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-5.0.1.tgz#1f396e161fe44b595db1b186a40067289bf06613"
@@ -9392,13 +9423,30 @@ Lockfile:
       httpplease "^0.16.4"
       once "^1.4.0"
   
-  react-is@^16.4.1:
+  react-is@^16.3.2, react-is@^16.4.1:
     version "16.4.1"
     resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.4.1.tgz#d624c4650d2c65dbd52c72622bbf389435d9776e"
   
   react-lifecycles-compat@^3.0.4:
     version "3.0.4"
     resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
+  
+  react-overlays@^0.8.0:
+    version "0.8.3"
+    resolved "http://ci-master:4873/react-overlays/-/react-overlays-0.8.3.tgz#fad65eea5b24301cca192a169f5dddb0b20d3ac5"
+    dependencies:
+      classnames "^2.2.5"
+      dom-helpers "^3.2.1"
+      prop-types "^15.5.10"
+      prop-types-extra "^1.0.1"
+      react-transition-group "^2.2.0"
+      warning "^3.0.0"
+  
+  react-prop-types@^0.4.0:
+    version "0.4.0"
+    resolved "http://ci-master:4873/react-prop-types/-/react-prop-types-0.4.0.tgz#f99b0bfb4006929c9af2051e7c1414a5c75b93d0"
+    dependencies:
+      warning "^3.0.0"
   
   react-reconciler@^0.7.0:
     version "0.7.0"
@@ -9467,7 +9515,7 @@ Lockfile:
       prop-types "^15.6.0"
       react-is "^16.4.1"
   
-  react-transition-group@^2.2.1:
+  react-transition-group@^2.0.0, react-transition-group@^2.2.0, react-transition-group@^2.2.1:
     version "2.4.0"
     resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-2.4.0.tgz#1d9391fabfd82e016f26fabd1eec329dbd922b5a"
     dependencies:
@@ -11474,6 +11522,12 @@ Lockfile:
     version "0.1.2"
     resolved "https://registry.yarnpkg.com/unc-path-regex/-/unc-path-regex-0.1.2.tgz#e73dd3d7b0d7c5ed86fbac6b0ae7d8c6a69d50fa"
   
+  uncontrollable@^4.1.0:
+    version "4.1.0"
+    resolved "http://ci-master:4873/uncontrollable/-/uncontrollable-4.1.0.tgz#e0358291252e1865222d90939b19f2f49f81c1a9"
+    dependencies:
+      invariant "^2.1.0"
+  
   underscore.string@~2.4.0:
     version "2.4.0"
     resolved "https://registry.yarnpkg.com/underscore.string/-/underscore.string-2.4.0.tgz#8cdd8fbac4e2d2ea1e7e2e8097c42f442280f85b"
@@ -11721,7 +11775,7 @@ Lockfile:
     version "2.0.3"
     resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
   
-  uuid@^3.0.0, uuid@^3.0.1, uuid@^3.1.0, uuid@^3.2.1:
+  uuid@^3.0.0, uuid@^3.0.1, uuid@^3.1.0, uuid@^3.3.2:
     version "3.3.2"
     resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
   

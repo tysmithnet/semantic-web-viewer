@@ -1,7 +1,7 @@
 {
-  "name": "react-redux-saga-boilerplate",
-  "title": "react-redux-saga-boilerplate",
-  "description": "React-Redux-Saga Boilerplate",
+  "name": "semantic-web-viewer",
+  "title": "semantic-web-viewer",
+  "description": "Web interface for viewing ",
   "version": "2018.3.0",
   "author": "Gil Barbara <gilbarbara@gmail.com>",
   "repository": {
