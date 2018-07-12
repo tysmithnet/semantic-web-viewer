@@ -87,6 +87,10 @@ export default class ForceGraph extends React.Component {
     }
   }
 
+  sayHi(){
+    console.log("hi!")
+  }
+
   render() {
     return (
       <div ref={this.graphRef}></div>

@@ -16,6 +16,7 @@ export class AllDb extends React.Component {
 
     constructor(props) {
         super(props);
+        this.forceGraphRef = React.createRef();
         this.handleGraphDataViewToggle = this.handleGraphDataViewToggle.bind(this);
         this.handleStoredProcSelectionChanged = this.handleStoredProcSelectionChanged.bind(this);
     }
@@ -27,6 +28,9 @@ export class AllDb extends React.Component {
     }
 
     componentDidUpdate() {
+        if(this.forceGraphRef.current) {
+            this.forceGraphRef.current.sayHi();
+        }
         if (this && this.props && this.props.loaded && this.graphRef && !this.graph) {
             
         }
@@ -89,7 +93,7 @@ export class AllDb extends React.Component {
         }
 
         const selectedNodes = [...(this.props.selectedStoredProcedures || []), ...(this.props.selectedTables || [])]
-        return <ForceGraph nodes={this.nodes} links={this.links} width={window.innerWidth * .7} height={window.innerHeight} selectedNodes={selectedNodes}/>
+        return <ForceGraph ref={this.forceGraphRef} nodes={this.nodes} links={this.links} width={window.innerWidth * .7} height={window.innerHeight} selectedNodes={selectedNodes}/>
     }
 
     handleStoredProcSelectionChanged(event) {
