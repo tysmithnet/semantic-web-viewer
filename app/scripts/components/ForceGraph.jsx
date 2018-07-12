@@ -7,7 +7,7 @@ import {toggleGraphView, setStoredProcedureSelection} from 'actions/views/all-db
 import cx from 'classnames';
 import {v4} from "uuid";
 import {Grid, Row, Col, FormGroup, FormControl, ControlLabel, HelpBlock} from 'react-bootstrap';
-
+import {Color, ShaderMaterial, Mesh, FrontSide, AdditiveBlending} from 'three';
 
 export default class ForceGraph extends React.Component {
   static propTypes = {
@@ -25,32 +25,60 @@ export default class ForceGraph extends React.Component {
     this.graph = null;
   }
 
+  static getDerivedStateFromProps(props, state) {
+  }
+
   shouldComponentUpdate() {
+    if(this.graph) {
+      this.graph.graphData().nodes.forEach(n => {
+        if(this.props.selectedNodes && this.props.selectedNodes.length) {
+          if(this.props.selectedNodes.indexOf(n.name) >= 0) { // todo: don't like that we use name here
+            const material = n.__threeObj.material;
+            const geometry = n.__threeObj.geometry;
+            const position = n.__threeObj.position;
+            const scene = this.graph.scene();
+            const camera = this.graph.camera();
+            var customMaterial = new ShaderMaterial( 
+              {
+                  uniforms: 
+                { 
+                  "c":   { type: "f", value: 1.0 },
+                  "p":   { type: "f", value: 1.4 },
+                  glowColor: { type: "c", value: new Color(0xffff00) },
+                  viewVector: { type: "v3", value: camera.position }
+                },
+                vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
+                fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+                side: FrontSide,
+                blending: AdditiveBlending,
+                transparent: true
+              }   );
+                
+              const glow = new Mesh(geometry.clone(), customMaterial.clone() );
+              glow.scale.multiplyScalar(1.2);
+              n.__threeObj.add(glow);
+          }
+          else {
+
+          }
+        }
+        else {
+
+        }
+      });
+    }
     return false;
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    this.graph.nodes().forEach(n => {
-      if(this.props.selectedNodes) {
-        if(this.props.selectedNodes.indexOf(n) >= 0) {
-          n.nodeOpacity(1);
-        }
-        else {
-          n.nodeOpacity(.5);
-        }
-      }
-      else {
-        n.nodeOpacity(1);
-      }
-    });
+
   }
 
   componentDidMount(){
     if(this.props.nodes) {
       
-      this.graph = new ForceGraph3D();
-      this
-          .graph(this.graphRef.current)
+      const factory = new ForceGraph3D();
+      this.graph = factory(this.graphRef.current)
           .nodeAutoColorBy(n => n.type)
           .linkAutoColorBy(l => l.type)
           .width(this.props.width) // from styless
