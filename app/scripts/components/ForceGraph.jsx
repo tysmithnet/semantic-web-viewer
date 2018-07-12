@@ -15,24 +15,26 @@ export default class ForceGraph extends React.Component {
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
     nodes: PropTypes.array,
-    links: PropTypes.array
+    links: PropTypes.array,
+    selectedNodes: PropTypes.array
   };
 
   constructor(props) {
     super(props);
     this.graphRef = React.createRef();
     this.graph = null;
-    console.log("constructor")
-    console.dir(props);
   }
 
   shouldComponentUpdate() {
-    console.log("should component update");
+    return false;
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log("ForceGraph.componentDidUpdate");
+    console.dir(prevProps, prevState, snapshot);
   }
 
   componentDidMount(){
-    console.log("component did mount")
-    console.dir(this.props)
     if(this.props.nodes) {
       
       this.graph = new ForceGraph3D();

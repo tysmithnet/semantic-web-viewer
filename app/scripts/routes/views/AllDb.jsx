@@ -59,7 +59,8 @@ export class AllDb extends React.Component {
     }
 
     renderGraph(){
-        const procNodes = this
+        if(!this.nodes) {
+            const procNodes = this
                 .props
                 .storedProcs
                 .map(x => {
@@ -85,7 +86,10 @@ export class AllDb extends React.Component {
                 ...tableNodes
             ];
             this.links = links;
-        return <ForceGraph nodes={this.nodes} links={this.links} width={window.innerWidth * .7} height={window.innerHeight} />
+        }
+
+        const selectedNodes = [...(this.props.selectedStoredProcedures || []), ...(this.props.selectedTables || [])]
+        return <ForceGraph nodes={this.nodes} links={this.links} width={window.innerWidth * .7} height={window.innerHeight} selectedNodes={selectedNodes}/>
     }
 
     handleStoredProcSelectionChanged(event) {
@@ -184,7 +188,7 @@ export class AllDb extends React.Component {
 
 /* istanbul ignore next */
 function mapStateToProps(state) {
-    return {storedProcs: state.allDb.storedProcs, loaded: state.allDb.loaded, tables: state.allDb.tables, relations: state.allDb.relations, isGraphView: state.allDb.isGraphView, selectedStoredProcedures: state.allDb.selectedStoredProcedures};
+    return {storedProcs: state.allDb.storedProcs, loaded: state.allDb.loaded, tables: state.allDb.tables, relations: state.allDb.relations, isGraphView: state.allDb.isGraphView, selectedStoredProcedures: state.allDb.selectedStoredProcedures, selectedTables: [], selectedRelations: []};
 }
 
 export default connect(mapStateToProps)(AllDb);
