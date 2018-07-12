@@ -57,7 +57,7 @@ module.exports = {
     moduleExtensions: ['-loader'],
   },
   context: paths.app,
-  devtool: '#inline-source-map',
+  devtool: 'source-map',
   entry: {},
   output: {
     filename: '[name].[git-version].js',

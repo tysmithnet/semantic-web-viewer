@@ -30,8 +30,19 @@ export default class ForceGraph extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log("ForceGraph.componentDidUpdate");
-    console.dir(prevProps, prevState, snapshot);
+    this.graph.nodes().forEach(n => {
+      if(this.props.selectedNodes) {
+        if(this.props.selectedNodes.indexOf(n) >= 0) {
+          n.nodeOpacity(1);
+        }
+        else {
+          n.nodeOpacity(.5);
+        }
+      }
+      else {
+        n.nodeOpacity(1);
+      }
+    });
   }
 
   componentDidMount(){
@@ -45,7 +56,6 @@ export default class ForceGraph extends React.Component {
           .width(this.props.width) // from styless
           .height(this.props.height)
           .graphData({nodes: this.props.nodes, links: this.props.links});
-      console.dir(this.graph);
     }
   }
 
