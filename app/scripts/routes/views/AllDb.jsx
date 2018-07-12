@@ -27,10 +27,6 @@ export class AllDb extends React.Component {
             .dispatch({type: ActionTypes.VIEWS.ALL_DB.ALL_DB_LOAD_REQUEST}); // todo: make action
     }
 
-    shouldComponentUpdate() {
-        return false;
-    }
-
     componentDidUpdate() {
         if(this.forceGraphRef.current) {
             this.forceGraphRef.current.sayHi();
@@ -112,6 +108,9 @@ export class AllDb extends React.Component {
                         this.forceGraphRef.current.highlightNode(node, 0x00ffff, 1.5);
                         found = true;
                     }
+                }
+                if(!found) {
+                    this.forceGraphRef.current.unhighlightNode(node);
                 }
             }
         }

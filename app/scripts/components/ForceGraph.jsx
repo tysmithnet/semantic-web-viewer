@@ -27,9 +27,6 @@ export default class ForceGraph extends React.Component {
     this.fragmentShader = document.getElementById( 'fragmentShader' ).textContent;
   }
 
-  static getDerivedStateFromProps(props, state) {
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
     return false;
   }
@@ -51,11 +48,15 @@ export default class ForceGraph extends React.Component {
     console.log("hi!")
   }
 
+  unhighlightNode(node) {
+    if(node.highlight) {
+      node.__threeObj.remove(node.highlight);
+      node.highlight = null;
+    }
+  }
+
   highlightNode(node, color, scale) {
-      if(node.highlight) {
-        node.__threeObj.remove(node.highlight);
-        node.highlight = null;
-      }
+      this.unhighlightNode(node);
       const geometry = node.__threeObj.geometry;
       const camera = this.graph.camera();
       var customMaterial = new ShaderMaterial( 
