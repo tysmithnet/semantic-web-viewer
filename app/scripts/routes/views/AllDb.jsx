@@ -27,6 +27,10 @@ export class AllDb extends React.Component {
             .dispatch({type: ActionTypes.VIEWS.ALL_DB.ALL_DB_LOAD_REQUEST}); // todo: make action
     }
 
+    shouldComponentUpdate() {
+        return false;
+    }
+
     componentDidUpdate() {
         if(this.forceGraphRef.current) {
             this.forceGraphRef.current.sayHi();
@@ -91,9 +95,28 @@ export class AllDb extends React.Component {
             ];
             this.links = links;
         }
+        if(this.forceGraphRef.current && this.nodes) {
+            for(let i = 0; i < this.nodes.length; i++) {
+                const node = this.nodes[i];
+                let found = false;
+                for(let j = 0; j < this.props.selectedStoredProcedures.length && !found; j++) {
+                    const selectedProc = this.props.selectedStoredProcedures[j];
+                    if(selectedProc == node.id) {
+                        this.forceGraphRef.current.highlightNode(node, 0xffff00, 1.5);
+                        found = true;
+                    }
+                }
+                for(let j = 0; j < this.props.selectedTables.length && !found; j++) {
+                    const selectedTable = this.props.selectedTables[j];
+                    if(selectedTable == node.id) {
+                        this.forceGraphRef.current.highlightNode(node, 0x00ffff, 1.5);
+                        found = true;
+                    }
+                }
+            }
+        }
 
-        const selectedNodes = [...(this.props.selectedStoredProcedures || []), ...(this.props.selectedTables || [])]
-        return <ForceGraph ref={this.forceGraphRef} nodes={this.nodes} links={this.links} width={window.innerWidth * .7} height={window.innerHeight} selectedNodes={selectedNodes}/>
+        return <ForceGraph ref={this.forceGraphRef} nodes={this.nodes} links={this.links} width={window.innerWidth * .7} height={window.innerHeight} />
     }
 
     handleStoredProcSelectionChanged(event) {
@@ -110,7 +133,7 @@ export class AllDb extends React.Component {
 
     renderControls() {
         function createProcOption(storedProc) {
-            return (<option key={storedProc.sp.value}>
+            return (<option key={storedProc.sp.value} value={storedProc.sp.value}>
                 {storedProc.title.value}
             </option>);
         }

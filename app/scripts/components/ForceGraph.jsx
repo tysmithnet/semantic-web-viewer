@@ -23,54 +23,14 @@ export default class ForceGraph extends React.Component {
     super(props);
     this.graphRef = React.createRef();
     this.graph = null;
+    this.vertexShader = document.getElementById( 'vertexShader'   ).textContent
+    this.fragmentShader = document.getElementById( 'fragmentShader' ).textContent;
   }
 
   static getDerivedStateFromProps(props, state) {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if(this.graph) {
-      this.graph.graphData().nodes.forEach(n => {
-        if(nextProps.selectedNodes && nextProps.selectedNodes.length) {
-          if(nextProps.selectedNodes.indexOf(n.name) >= 0 && !n.glow) { // todo: don't like that we use name here
-            const geometry = n.__threeObj.geometry;
-            const camera = this.graph.camera();
-            var customMaterial = new ShaderMaterial( 
-              {
-                  uniforms: 
-                { 
-                  "c":   { type: "f", value: 1.0 },
-                  "p":   { type: "f", value: 1.4 },
-                  glowColor: { type: "c", value: new Color(0xffff00) },
-                  viewVector: { type: "v3", value: camera.position }
-                },
-                vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
-                fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
-                side: FrontSide,
-                blending: AdditiveBlending,
-                transparent: true
-              }   );
-                
-              const glow = new Mesh(geometry.clone(), customMaterial.clone() );
-              glow.scale.multiplyScalar(1.5);
-              n.__threeObj.add(glow);
-              n.glow = glow;
-          }
-          else {
-            if(n.glow) {
-              n.__threeObj.remove(n.glow);
-              delete n.glow;
-            }
-          }
-        }
-        else {
-          if(n.glow) {
-            n.__threeObj.remove(n.glow);
-            delete n.glow;
-          }
-        }
-      });
-    }
     return false;
   }
 
@@ -89,6 +49,35 @@ export default class ForceGraph extends React.Component {
 
   sayHi(){
     console.log("hi!")
+  }
+
+  highlightNode(node, color, scale) {
+      if(node.highlight) {
+        node.__threeObj.remove(node.highlight);
+        node.highlight = null;
+      }
+      const geometry = node.__threeObj.geometry;
+      const camera = this.graph.camera();
+      var customMaterial = new ShaderMaterial( 
+        {
+            uniforms: 
+          { 
+            "c":   { type: "f", value: 1.0 },
+            "p":   { type: "f", value: 1.4 },
+            glowColor: { type: "c", value: new Color(color) },
+            viewVector: { type: "v3", value: camera.position }
+          },
+          vertexShader: this.vertexShader,
+          fragmentShader: this.fragmentShader,
+          side: FrontSide,
+          blending: AdditiveBlending,
+          transparent: true
+        }   );
+          
+        const glow = new Mesh(geometry.clone(), customMaterial.clone() );
+        glow.scale.multiplyScalar(scale);
+        node.__threeObj.add(glow);
+        node.highlight = glow;
   }
 
   render() {
