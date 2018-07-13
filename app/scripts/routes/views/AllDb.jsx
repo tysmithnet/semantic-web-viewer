@@ -6,7 +6,7 @@ import {ActionTypes} from '../../constants';
 import {toggleGraphView, setStoredProcedureSelection, setTableSelection} from 'actions/views/all-db';
 import cx from 'classnames';
 import {v4} from "uuid";
-import {Grid, Row, Col, FormGroup, FormControl, ControlLabel, HelpBlock} from 'react-bootstrap';
+import {Grid, Row, Col, FormGroup, FormControl, ControlLabel, ButtonGroup, Button} from 'react-bootstrap';
 import ForceGraph from 'components/ForceGraph';
 
 export class AllDb extends React.Component {
@@ -28,17 +28,8 @@ export class AllDb extends React.Component {
             .dispatch({type: ActionTypes.VIEWS.ALL_DB.ALL_DB_LOAD_REQUEST}); // todo: make action
     }
 
-    componentDidUpdate() {
-        if(this.forceGraphRef.current) {
-            this.forceGraphRef.current.sayHi();
-        }
-        if (this && this.props && this.props.loaded && this.graphRef && !this.graph) {
-            
-        }
-    }
-
-    handleGraphDataViewToggle(event) {
-        this.props.dispatch(toggleGraphView(event.target.checked));
+    handleGraphDataViewToggle(isGraph) {
+        this.props.dispatch(toggleGraphView(isGraph));
     }
 
     render() {
@@ -159,6 +150,10 @@ export class AllDb extends React.Component {
             <form>
                 <div className="container">
                     <div className="col-sm-12">
+                    <ButtonGroup>
+                        <Button onClick={(e) => this.handleGraphDataViewToggle(true)}>Graph</Button>
+                        <Button onClick={(e) => this.handleGraphDataViewToggle(false)}>Table</Button>
+                    </ButtonGroup>
                     <FormGroup controlId="storedProceduresSelection">
                         <ControlLabel>Stored Procedures</ControlLabel>
                         <FormControl componentClass="select" multiple onChange={this.handleStoredProcSelectionChanged}>

@@ -40,8 +40,8 @@ export default class ForceGraph extends React.Component {
           .linkAutoColorBy(l => l.type)
           .width(this.props.width) // from styless
           .height(this.props.height)
-          .graphData({nodes: this.props.nodes, links: this.props.links});
-    }
+          .graphData({nodes: this.props.nodes, links: this.props.links})
+      }
   }
 
   sayHi(){
