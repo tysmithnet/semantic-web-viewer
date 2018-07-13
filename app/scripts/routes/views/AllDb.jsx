@@ -23,6 +23,7 @@ export class AllDb extends React.Component {
         this.handleStoredProcSelectionChanged = this.handleStoredProcSelectionChanged.bind(this);
         this.handleTableSelectionChanged = this.handleTableSelectionChanged.bind(this);
         this.handleRelationSelectionChanged = this.handleRelationSelectionChanged.bind(this);
+        this.highlightHotspots = this.highlightHotspots.bind(this);
         this.procLookup = new Map();
         this.tableLookup = new Map();
         this.nodeDegree = new Map();
@@ -84,6 +85,13 @@ export class AllDb extends React.Component {
                 .map(x => {
                     return {key: v4(), source: x.sp.value, target: x.tb.value, type: x.rel.value}
                 });
+
+            links.forEach(l => {
+                const sourceDegree = this.nodeDegree.get(l.source) || 0;
+                const targetDegree = this.nodeDegree.get(l.target) || 0;
+                this.nodeDegree.set(l.source, sourceDegree + 1);
+                this.nodeDegree.set(l.target, targetDegree + 1);
+            })
 
             this.nodes = [
                 ...procNodes,
@@ -233,7 +241,20 @@ export class AllDb extends React.Component {
 
     highlightHotspots(isOn) {
         if(isOn) {
+            for(let a of this.nodeDegree.entries()) {
+                const id = a[0];
+                const num = a[1];
 
+                if(num > 5) {
+                    const node = this.procLookup.get(id) || this.tableLookup.get(id);
+                    if(!node)
+                        return;
+                    this.forceGraphRef.current.highlightNode(node, 0xff0000, 3);
+                }
+            }
+        }
+        else {
+            ;
         }
     }
 

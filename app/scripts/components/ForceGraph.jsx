@@ -95,7 +95,6 @@ export default class ForceGraph extends React.Component {
 
   unhighlightLink(link) {
     if(link.originalLineMat){
-      console.log("unhighlighting link")
       link.__lineObj.material = link.originalLineMat;
     }
   }
