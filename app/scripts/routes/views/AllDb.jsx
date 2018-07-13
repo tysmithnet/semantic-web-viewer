@@ -125,6 +125,10 @@ export class AllDb extends React.Component {
                     else if(link.type.indexOf("insert") > -1) {
                         this.forceGraphRef.current.highlightLink(link, 0xff00ff, 1.25)
                     }
+                    else
+                {
+                    this.forceGraphRef.current.unhighlightLink(link);
+                }
                 }
                 else
                 {
