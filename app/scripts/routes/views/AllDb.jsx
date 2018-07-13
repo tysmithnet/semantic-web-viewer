@@ -3,11 +3,12 @@ import React from 'react';
 import {connect} from 'react-redux';
 import ForceGraph3D from '3d-force-graph';
 import {ActionTypes} from '../../constants';
-import {toggleGraphView, setStoredProcedureSelection, setTableSelection} from 'actions/views/all-db';
+import {toggleGraphView, setStoredProcedureSelection, setTableSelection, setRelationSelection} from 'actions/views/all-db';
 import cx from 'classnames';
 import {v4} from "uuid";
 import {Grid, Row, Col, FormGroup, FormControl, ControlLabel, ButtonGroup, Button} from 'react-bootstrap';
 import ForceGraph from 'components/ForceGraph';
+import { isThisHour } from 'date-fns';
 
 export class AllDb extends React.Component {
     static propTypes = {
@@ -20,6 +21,7 @@ export class AllDb extends React.Component {
         this.handleGraphDataViewToggle = this.handleGraphDataViewToggle.bind(this);
         this.handleStoredProcSelectionChanged = this.handleStoredProcSelectionChanged.bind(this);
         this.handleTableSelectionChanged = this.handleTableSelectionChanged.bind(this);
+        this.handleRelationSelectionChanged = this.handleRelationSelectionChanged.bind(this);
     }
 
     componentWillMount() {
@@ -107,6 +109,42 @@ export class AllDb extends React.Component {
             }
         }
 
+        if(this.forceGraphRef.current && this.links) {
+            for(let i = 0; i < this.links.length; i++) {
+                const link = this.links[i];
+                if(this.props.selectedRelations && this.props.selectedRelations.some(r => r.indexOf("select") > -1))
+                {
+                    if(this.forceGraphRef.current) {
+                        this.forceGraphRef.current.highlightLink(link, 0x00ff00, 5);
+                    }
+                }
+                else if(this.props.selectedRelations && this.props.selectedRelations.some(r => r.indexOf("insert") > -1))
+                {
+                    if(this.forceGraphRef.current) {
+                        this.forceGraphRef.current.highlightLink(link, 0xf0f0f0, 5);
+                    }
+                }
+                else if(this.props.selectedRelations && this.props.selectedRelations.some(r => r.indexOf("update") > -1))
+                {
+                    if(this.forceGraphRef.current) {
+                        this.forceGraphRef.current.highlightLink(link, 0x000fff, 5);
+                    }
+                }
+                else if(this.props.selectedRelations && this.props.selectedRelations.some(r => r.indexOf("delete") > -1))
+                {
+                    if(this.forceGraphRef.current) {
+                        this.forceGraphRef.current.highlightLink(link, 0xfff000, 5);
+                    }
+                }
+                else
+                {
+                    if(this.forceGraphRef.current) {
+                        this.forceGraphRef.current.unhighlightLink(link);
+                    }
+                }
+            }
+        }
+
         return <ForceGraph ref={this.forceGraphRef} nodes={this.nodes} links={this.links} width={window.innerWidth * .7} height={window.innerHeight} />
     }
 
@@ -133,6 +171,19 @@ export class AllDb extends React.Component {
         }
         this.props.dispatch(setTableSelection(selected));
     }
+
+    handleRelationSelectionChanged(event) {
+        const selected = [];
+        if(event && event.target && event.target.options) {
+            for(let i = 0; i < event.target.options.length; i++) {
+                const option  = event.target.options[i];
+                if(option.selected)
+                    selected.push(option.value);
+            }
+        }
+        this.props.dispatch(setRelationSelection(selected));
+    }
+
     renderControls() {
         function createProcOption(storedProc) {
             return (<option key={storedProc.sp.value} value={storedProc.sp.value}>
@@ -141,7 +192,7 @@ export class AllDb extends React.Component {
         }
 
         function createTableOption(table) {
-            return (<option key={table.tb.id} value={table.tb.value}>
+            return (<option key={table.tb.value} value={table.tb.value}>
                 {table.title.value}
             </option>);
         }
@@ -164,6 +215,15 @@ export class AllDb extends React.Component {
                         <ControlLabel>Tables</ControlLabel>
                         <FormControl componentClass="select" multiple onChange={this.handleTableSelectionChanged}>
                             {this.props.tables.map(createTableOption)}
+                        </FormControl>
+                    </FormGroup>
+                    <FormGroup controlId="tableSelection">
+                        <ControlLabel>Relations</ControlLabel>
+                        <FormControl componentClass="select" multiple onChange={this.handleRelationSelectionChanged}>
+                            <option key="select" value="select">Select</option>
+                            <option key="insert" value="insert">Insert</option>
+                            <option key="update" value="update">Update</option>
+                            <option key="delete" value="delete">Delete</option>
                         </FormControl>
                     </FormGroup>
                 </div>
@@ -231,7 +291,7 @@ function mapStateToProps(state) {
         loaded: state.allDb.loaded, 
         tables: state.allDb.tables, 
         relations: state.allDb.relations, 
-        isGraphView: state.allDb.isGraphView, selectedStoredProcedures: state.allDb.selectedStoredProcedures, selectedTables: state.allDb.selectedTables, selectedRelations: []};
+        isGraphView: state.allDb.isGraphView, selectedStoredProcedures: state.allDb.selectedStoredProcedures, selectedTables: state.allDb.selectedTables, selectedRelations: state.allDb.selectedRelations};
 }
 
 export default connect(mapStateToProps)(AllDb);

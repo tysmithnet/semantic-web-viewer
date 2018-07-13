@@ -20,3 +20,10 @@ export function setTableSelection(tableIds) {
         payload: tableIds
     }
 }
+
+export function setRelationSelection(relations) {
+    return {
+        type: ActionTypes.VIEWS.ALL_DB.ALL_DB_RELATION_SELECTION_CHANGED,
+        payload: relations
+    }
+}

@@ -7,7 +7,7 @@ import {toggleGraphView, setStoredProcedureSelection} from 'actions/views/all-db
 import cx from 'classnames';
 import {v4} from "uuid";
 import {Grid, Row, Col, FormGroup, FormControl, ControlLabel, HelpBlock} from 'react-bootstrap';
-import {Color, ShaderMaterial, Mesh, FrontSide, AdditiveBlending} from 'three';
+import {Color, ShaderMaterial, Mesh, FrontSide, AdditiveBlending, LineBasicMaterial} from 'three';
 
 export default class ForceGraph extends React.Component {
   static propTypes = {
@@ -16,7 +16,6 @@ export default class ForceGraph extends React.Component {
     height: PropTypes.number.isRequired,
     nodes: PropTypes.array,
     links: PropTypes.array,
-    selectedNodes: PropTypes.array
   };
 
   constructor(props) {
@@ -79,6 +78,22 @@ export default class ForceGraph extends React.Component {
         glow.scale.multiplyScalar(scale);
         node.__threeObj.add(glow);
         node.highlight = glow;
+  }
+
+  highlightLink(link, color, width) {
+    const geometry = link.__lineObj.geometry;
+    const material = link.__lineObj.material;
+    link.__originalLineObj = material;
+    const newMaterial = new LineBasicMaterial({
+      color,
+      lineWidth: width
+    })
+    link.__lineObj.material = newMaterial;
+  }
+
+  unhighlightLink(link) {
+    const original = link.__originalLineObj;
+    link.material = original;
   }
 
   render() {
