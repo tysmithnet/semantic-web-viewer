@@ -112,35 +112,23 @@ export class AllDb extends React.Component {
         if(this.forceGraphRef.current && this.links) {
             for(let i = 0; i < this.links.length; i++) {
                 const link = this.links[i];
-                if(this.props.selectedRelations && this.props.selectedRelations.some(r => r.indexOf("select") > -1))
-                {
-                    if(this.forceGraphRef.current) {
-                        this.forceGraphRef.current.highlightLink(link, 0x00ff00, 5);
+                if(this.props.selectedRelations.some(r => link.type.indexOf(r) > -1)){
+                    if(link.type.indexOf("select") > -1){
+                        this.forceGraphRef.current.highlightLink(link, 0xfff000, 1.25)
                     }
-                }
-                else if(this.props.selectedRelations && this.props.selectedRelations.some(r => r.indexOf("insert") > -1))
-                {
-                    if(this.forceGraphRef.current) {
-                        this.forceGraphRef.current.highlightLink(link, 0xf0f0f0, 5);
+                    else if(link.type.indexOf("update") > -1) {
+                        this.forceGraphRef.current.highlightLink(link, 0x000fff, 1.25)
                     }
-                }
-                else if(this.props.selectedRelations && this.props.selectedRelations.some(r => r.indexOf("update") > -1))
-                {
-                    if(this.forceGraphRef.current) {
-                        this.forceGraphRef.current.highlightLink(link, 0x000fff, 5);
+                    else if(link.type.indexOf("delete") > -1) {
+                        this.forceGraphRef.current.highlightLink(link, 0xf0f0f0, 1.25)
                     }
-                }
-                else if(this.props.selectedRelations && this.props.selectedRelations.some(r => r.indexOf("delete") > -1))
-                {
-                    if(this.forceGraphRef.current) {
-                        this.forceGraphRef.current.highlightLink(link, 0xfff000, 5);
+                    else if(link.type.indexOf("insert") > -1) {
+                        this.forceGraphRef.current.highlightLink(link, 0xff00ff, 1.25)
                     }
                 }
                 else
                 {
-                    if(this.forceGraphRef.current) {
-                        this.forceGraphRef.current.unhighlightLink(link);
-                    }
+                    this.forceGraphRef.current.unhighlightLink(link);
                 }
             }
         }

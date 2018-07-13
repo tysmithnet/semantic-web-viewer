@@ -83,7 +83,7 @@ export default class ForceGraph extends React.Component {
   highlightLink(link, color, width) {
     const geometry = link.__lineObj.geometry;
     const material = link.__lineObj.material;
-    link.__originalLineObj = material;
+    link.__originalLineMat = material;
     const newMaterial = new LineBasicMaterial({
       color,
       lineWidth: width
@@ -92,8 +92,9 @@ export default class ForceGraph extends React.Component {
   }
 
   unhighlightLink(link) {
-    const original = link.__originalLineObj;
-    link.material = original;
+    if(link.__originalLineMat){
+      link.__lineObj.material = link.__originalLineMat;
+    }
   }
 
   render() {
