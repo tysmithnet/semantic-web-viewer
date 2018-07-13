@@ -3,7 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import ForceGraph3D from '3d-force-graph';
 import {ActionTypes} from '../../constants';
-import {toggleGraphView, setStoredProcedureSelection} from 'actions/views/all-db';
+import {toggleGraphView, setStoredProcedureSelection, setTableSelection} from 'actions/views/all-db';
 import cx from 'classnames';
 import {v4} from "uuid";
 import {Grid, Row, Col, FormGroup, FormControl, ControlLabel, HelpBlock} from 'react-bootstrap';
@@ -19,6 +19,7 @@ export class AllDb extends React.Component {
         this.forceGraphRef = React.createRef();
         this.handleGraphDataViewToggle = this.handleGraphDataViewToggle.bind(this);
         this.handleStoredProcSelectionChanged = this.handleStoredProcSelectionChanged.bind(this);
+        this.handleTableSelectionChanged = this.handleTableSelectionChanged.bind(this);
     }
 
     componentWillMount() {
@@ -95,14 +96,14 @@ export class AllDb extends React.Component {
             for(let i = 0; i < this.nodes.length; i++) {
                 const node = this.nodes[i];
                 let found = false;
-                for(let j = 0; j < this.props.selectedStoredProcedures.length && !found; j++) {
+                for(let j = 0; this.props.selectedStoredProcedures && j < this.props.selectedStoredProcedures.length && !found; j++) {
                     const selectedProc = this.props.selectedStoredProcedures[j];
                     if(selectedProc == node.id) {
                         this.forceGraphRef.current.highlightNode(node, 0xffff00, 1.5);
                         found = true;
                     }
                 }
-                for(let j = 0; j < this.props.selectedTables.length && !found; j++) {
+                for(let j = 0; this.props.selectedTables && j < this.props.selectedTables.length && !found; j++) {
                     const selectedTable = this.props.selectedTables[j];
                     if(selectedTable == node.id) {
                         this.forceGraphRef.current.highlightNode(node, 0x00ffff, 1.5);
@@ -235,7 +236,7 @@ function mapStateToProps(state) {
         loaded: state.allDb.loaded, 
         tables: state.allDb.tables, 
         relations: state.allDb.relations, 
-        isGraphView: state.allDb.isGraphView, selectedStoredProcedures: state.allDb.selectedStoredProcedures, selectedTables: [], selectedRelations: []};
+        isGraphView: state.allDb.isGraphView, selectedStoredProcedures: state.allDb.selectedStoredProcedures, selectedTables: state.allDb.selectedTables, selectedRelations: []};
 }
 
 export default connect(mapStateToProps)(AllDb);
