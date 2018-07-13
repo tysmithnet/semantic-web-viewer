@@ -8,7 +8,8 @@ export const allDbState = {
     relations: null,
     loaded: false,
     isGraphView: true,
-    selectedStoredProcedures: null
+    selectedStoredProcedures: null,
+    selectedTables: null
 };
 
 export default {
@@ -32,6 +33,12 @@ export default {
             return Object.freeze({
                 ...state,
                 selectedStoredProcedures: payload
+            });
+        },
+        [ActionTypes.VIEWS.ALL_DB.ALL_DB_TABLE_SELECTION_CHANGED](state, {payload}) {
+            return Object.freeze({
+                ...state,
+                selectedTables: payload
             });
         }
     })

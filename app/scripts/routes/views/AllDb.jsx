@@ -130,6 +130,17 @@ export class AllDb extends React.Component {
         this.props.dispatch(setStoredProcedureSelection(selected));
     }
 
+    handleTableSelectionChanged(event) {
+        const selected = [];
+        if(event && event.target && event.target.options) {
+            for(let i = 0; i < event.target.options.length; i++) {
+                const option  = event.target.options[i];
+                if(option.selected)
+                    selected.push(option.value);
+            }
+        }
+        this.props.dispatch(setTableSelection(selected));
+    }
     renderControls() {
         function createProcOption(storedProc) {
             return (<option key={storedProc.sp.value} value={storedProc.sp.value}>
@@ -138,7 +149,7 @@ export class AllDb extends React.Component {
         }
 
         function createTableOption(table) {
-            return (<option key={table.tb.id}>
+            return (<option key={table.tb.id} value={table.tb.value}>
                 {table.title.value}
             </option>);
         }
@@ -147,10 +158,16 @@ export class AllDb extends React.Component {
             <form>
                 <div className="container">
                     <div className="col-sm-12">
-                    <FormGroup controlId="formControlsSelectMultiple">
-                        <ControlLabel>Multiple select</ControlLabel>
+                    <FormGroup controlId="storedProceduresSelection">
+                        <ControlLabel>Stored Procedures</ControlLabel>
                         <FormControl componentClass="select" multiple onChange={this.handleStoredProcSelectionChanged}>
                             {this.props.storedProcs.map(createProcOption)}
+                        </FormControl>
+                    </FormGroup>
+                    <FormGroup controlId="tableSelection">
+                        <ControlLabel>Tables</ControlLabel>
+                        <FormControl componentClass="select" multiple onChange={this.handleTableSelectionChanged}>
+                            {this.props.tables.map(createTableOption)}
                         </FormControl>
                     </FormGroup>
                 </div>
@@ -214,7 +231,11 @@ export class AllDb extends React.Component {
 
 /* istanbul ignore next */
 function mapStateToProps(state) {
-    return {storedProcs: state.allDb.storedProcs, loaded: state.allDb.loaded, tables: state.allDb.tables, relations: state.allDb.relations, isGraphView: state.allDb.isGraphView, selectedStoredProcedures: state.allDb.selectedStoredProcedures, selectedTables: [], selectedRelations: []};
+    return {storedProcs: state.allDb.storedProcs, 
+        loaded: state.allDb.loaded, 
+        tables: state.allDb.tables, 
+        relations: state.allDb.relations, 
+        isGraphView: state.allDb.isGraphView, selectedStoredProcedures: state.allDb.selectedStoredProcedures, selectedTables: [], selectedRelations: []};
 }
 
 export default connect(mapStateToProps)(AllDb);

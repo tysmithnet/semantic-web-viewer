@@ -13,3 +13,10 @@ export function setStoredProcedureSelection(procIds) {
         payload: procIds
     }
 }
+
+export function setTableSelection(tableIds) {
+    return {
+        type: ActionTypes.VIEWS.ALL_DB.ALL_DB_TABLE_SELECTION_CHANGED,
+        payload: tableIds
+    }
+}
