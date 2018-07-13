@@ -9,6 +9,7 @@ import {v4} from "uuid";
 import {Grid, Row, Col, FormGroup, FormControl, ControlLabel, ButtonGroup, Button} from 'react-bootstrap';
 import ForceGraph from 'components/ForceGraph';
 import { isThisHour } from 'date-fns';
+import { Map } from 'core-js';
 
 export class AllDb extends React.Component {
     static propTypes = {
@@ -22,6 +23,9 @@ export class AllDb extends React.Component {
         this.handleStoredProcSelectionChanged = this.handleStoredProcSelectionChanged.bind(this);
         this.handleTableSelectionChanged = this.handleTableSelectionChanged.bind(this);
         this.handleRelationSelectionChanged = this.handleRelationSelectionChanged.bind(this);
+        this.procLookup = new Map();
+        this.tableLookup = new Map();
+        this.nodeDegree = new Map();
     }
 
     componentWillMount() {
@@ -64,6 +68,7 @@ export class AllDb extends React.Component {
                 .map(x => {
                     return {key: v4(), id: x.sp.value, name: x.title.value, type: "storedProc"}; // todo: constant value
                 });
+            procNodes.forEach(p => this.procLookup.set(p.id, p));
 
             const tableNodes = this
                 .props
@@ -71,6 +76,7 @@ export class AllDb extends React.Component {
                 .map(x => {
                     return {key: v4(), id: x.tb.value, name: x.title.value, type: "table"}; // todo: constant value
                 });
+                tableNodes.forEach(t => this.tableLookup.set(t.id, t));
 
             const links = this
                 .props
@@ -112,7 +118,7 @@ export class AllDb extends React.Component {
         if(this.forceGraphRef.current && this.links) {
             for(let i = 0; i < this.links.length; i++) {
                 const link = this.links[i];
-                if(this.props.selectedRelations.some(r => link.type.indexOf(r) > -1)){
+                if(this.props.selectedRelations && this.props.selectedRelations.some(r => link.type.indexOf(r) > -1)){
                     if(link.type.indexOf("select") > -1){
                         this.forceGraphRef.current.highlightLink(link, 0xfff000, 1.25)
                     }
@@ -218,10 +224,17 @@ export class AllDb extends React.Component {
                             <option key="delete" value="delete">Delete</option>
                         </FormControl>
                     </FormGroup>
+                    <Button onClick={(e) => this.highlightHotspots(true)}>Highlight Hotspots</Button>
                 </div>
                 </div>
           </form>       
         )
+    }
+
+    highlightHotspots(isOn) {
+        if(isOn) {
+
+        }
     }
 
     renderTable() {

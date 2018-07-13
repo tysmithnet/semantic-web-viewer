@@ -85,7 +85,7 @@ export default class ForceGraph extends React.Component {
     const material = link.__lineObj.material;
     if(!link.originalLineMat)
       link.originalLineMat = material;
-      
+
     const newMaterial = new LineBasicMaterial({
       color,
       linewidth: width
@@ -96,7 +96,7 @@ export default class ForceGraph extends React.Component {
   unhighlightLink(link) {
     if(link.originalLineMat){
       console.log("unhighlighting link")
-      link.__lineObj.material = link.originalLineMat.clone();
+      link.__lineObj.material = link.originalLineMat;
     }
   }
 
