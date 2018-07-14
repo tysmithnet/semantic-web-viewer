@@ -10,6 +10,8 @@ import {Grid, Row, Col, FormGroup, FormControl, ControlLabel, ButtonGroup, Butto
 import ForceGraph from 'components/ForceGraph';
 import { isThisHour } from 'date-fns';
 import { Map } from 'core-js';
+import {Typeahead} from 'react-bootstrap-typeahead';
+
 
 export class AllDb extends React.Component {
     static propTypes = {
@@ -40,29 +42,7 @@ export class AllDb extends React.Component {
     }
 
     render() {
-        if (this.props.loaded) {
-            return (
-                <div className="all-db">
-                    <div className="controls">
-                        {this.renderControls()}
-                    </div>
-                    <div className="output">
-                        <div className={cx('graph', {'hidden': !this.props.isGraphView})} >
-                            {this.renderGraph()}
-                        </div>
-                        <div className={cx('data', {'hidden': this.props.isGraphView})}>
-                            {this.renderTable()}
-                        </div>
-                    </div>
-                </div>
-            );
-        } else {
-            return <span>Loading..</span>
-        }
-    }
-
-    renderGraph(){
-        if(!this.nodes) {
+        if(this.props.loaded && !this.nodes) {
             const procNodes = this
                 .props
                 .storedProcs
@@ -99,6 +79,29 @@ export class AllDb extends React.Component {
             ];
             this.links = links;
         }
+        if (this.props.loaded) {
+            return (
+                <div className="all-db">
+                    <div className="controls">
+                        {this.renderControls()}
+                    </div>
+                    <div className="output">
+                        <div className={cx('graph', {'hidden': !this.props.isGraphView})} >
+                            {this.renderGraph()}
+                        </div>
+                        <div className={cx('data', {'hidden': this.props.isGraphView})}>
+                            {this.renderTable()}
+                        </div>
+                    </div>
+                </div>
+            );
+        } else {
+            return <span>Loading..</span>
+        }
+    }
+
+    renderGraph(){
+       
         if(this.forceGraphRef.current && this.nodes) {
             for(let i = 0; i < this.nodes.length; i++) {
                 const node = this.nodes[i];
@@ -154,28 +157,14 @@ export class AllDb extends React.Component {
         return <ForceGraph ref={this.forceGraphRef} nodes={this.nodes} links={this.links} width={window.innerWidth * .7} height={window.innerHeight} />
     }
 
-    handleStoredProcSelectionChanged(event) {
-        const selected = [];
-        if(event && event.target && event.target.options) {
-            for(let i = 0; i < event.target.options.length; i++) {
-                const option  = event.target.options[i];
-                if(option.selected)
-                    selected.push(option.value);
-            }
-        }
-        this.props.dispatch(setStoredProcedureSelection(selected));
+    handleStoredProcSelectionChanged(selected) {
+        const ids = selected.map(s => s.id);
+        this.props.dispatch(setStoredProcedureSelection(ids));
     }
 
-    handleTableSelectionChanged(event) {
-        const selected = [];
-        if(event && event.target && event.target.options) {
-            for(let i = 0; i < event.target.options.length; i++) {
-                const option  = event.target.options[i];
-                if(option.selected)
-                    selected.push(option.value);
-            }
-        }
-        this.props.dispatch(setTableSelection(selected));
+    handleTableSelectionChanged(selected) {
+        const ids = selected.map(s => s.id);
+        this.props.dispatch(setTableSelection(ids));
     }
 
     handleRelationSelectionChanged(event) {
@@ -213,15 +202,21 @@ export class AllDb extends React.Component {
                     </ButtonGroup>
                     <FormGroup controlId="storedProceduresSelection">
                         <ControlLabel>Stored Procedures</ControlLabel>
-                        <FormControl componentClass="select" multiple onChange={this.handleStoredProcSelectionChanged}>
-                            {this.props.storedProcs.map(createProcOption)}
-                        </FormControl>
+                        <Typeahead
+                            labelKey="name"
+                            multiple
+                            onChange={this.handleStoredProcSelectionChanged}
+                            options={this.nodes.filter(x => x.type == "storedProc")}
+                            />
                     </FormGroup>
                     <FormGroup controlId="tableSelection">
                         <ControlLabel>Tables</ControlLabel>
-                        <FormControl componentClass="select" multiple onChange={this.handleTableSelectionChanged}>
-                            {this.props.tables.map(createTableOption)}
-                        </FormControl>
+                        <Typeahead
+                            labelKey="name"
+                            multiple
+                            onChange={this.handleTableSelectionChanged}
+                            options={this.nodes.filter(x => x.type == "table")}
+                            />
                     </FormGroup>
                     <FormGroup controlId="tableSelection">
                         <ControlLabel>Relations</ControlLabel>
