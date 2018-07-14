@@ -55,6 +55,7 @@
     "three-dragcontrols": "^0.88.2",
     "three-forcegraph": "^1.13.1",
     "three-render-objects": "^1.0.5",
+    "three-spritetext": "^1.0.5",
     "three-trackballcontrols": "^0.0.7",
     "uuid": "^3.3.2"
   },

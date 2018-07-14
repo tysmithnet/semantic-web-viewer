@@ -12,7 +12,6 @@ import { isThisHour } from 'date-fns';
 import { Map } from 'core-js';
 import {Typeahead} from 'react-bootstrap-typeahead';
 
-
 export class AllDb extends React.Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired

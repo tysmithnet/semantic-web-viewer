@@ -8,6 +8,7 @@ import cx from 'classnames';
 import {v4} from "uuid";
 import {Grid, Row, Col, FormGroup, FormControl, ControlLabel, HelpBlock} from 'react-bootstrap';
 import {Color, ShaderMaterial, Mesh, FrontSide, AdditiveBlending, LineBasicMaterial} from 'three';
+import SpriteText from "three-spritetext";
 
 export default class ForceGraph extends React.Component {
   static propTypes = {
@@ -39,7 +40,14 @@ export default class ForceGraph extends React.Component {
           .linkAutoColorBy(l => l.type)
           .width(this.props.width) // from styless
           .height(this.props.height)
-          .graphData({nodes: this.props.nodes, links: this.props.links})
+          .nodeThreeObject(n => {
+            const sprite = new SpriteText(n.id);
+            sprite.text = n.name;
+            sprite.color = n.color;
+            sprite.textHeight = 3;
+            return sprite;
+          })
+          .graphData({nodes: this.props.nodes, links: this.props.links}) 
       }
   }
 
