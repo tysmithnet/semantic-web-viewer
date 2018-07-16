@@ -21,6 +21,9 @@ export default {
                 storedProcs: payload.storedProcs,
                 tables: payload.tables,
                 relations: payload.relations,
+                selectedStoredProcedures: [],
+                selectedTables: [],
+                selectedRelations: [],
                 loaded: true
             });
         },
@@ -46,6 +49,20 @@ export default {
             return Object.freeze({
                 ...state,
                 selectedRelations: payload
+            });
+        },
+        [ActionTypes.VIEWS.ALL_DB.ALL_DB_REMOVE_NODES_REQUESTED](state, {payload}) {
+            const storedProcs = state.storedProcs.filter(f => !payload.some(n => f.id === n.id));
+            const tables = state.tables.filter(f => !payload.some(n => f.id === n.id));
+            const relations = state.relations.filter(r => !payload.some(n => r.source === n.id || r.target == n.id));
+            return Object.freeze({
+                ...state,
+                storedProcs,
+                tables,
+                relations,
+                selectedStoredProcedures: state.selectedStoredProcedures.filter(sp => storedProcs.some(x => x.id == sp.id)),
+                selectedTables: state.selectedTables.filter(sp => tables.some(x => x.id == sp.id)),
+                selectedRelations: state.selectedRelations.filter(sp => relations.some(x => x.id == sp.id))
             });
         }
     })

@@ -1,14 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
-import ForceGraph3D from '3d-force-graph';
+import {ForceGraph3D} from 'react-force-graph';
 import {ActionTypes} from '../../constants';
-import {toggleGraphView, setStoredProcedureSelection, setTableSelection, setRelationSelection} from 'actions/views/all-db';
+import {toggleGraphView, setStoredProcedureSelection, setTableSelection, setRelationSelection, removeSelectedNodes} from 'actions/views/all-db';
 import cx from 'classnames';
 import {v4} from "uuid";
 import {Grid, Row, Col, FormGroup, FormControl, ControlLabel, ButtonGroup, Button} from 'react-bootstrap';
-import ForceGraph from 'components/ForceGraph';
-import { isThisHour } from 'date-fns';
 import { Map } from 'core-js';
 import {Typeahead} from 'react-bootstrap-typeahead';
 import Switch from 'react-bootstrap-switch';
@@ -26,7 +24,7 @@ export class AllDb extends React.Component {
         this.handleStoredProcSelectionChanged = this.handleStoredProcSelectionChanged.bind(this);
         this.handleTableSelectionChanged = this.handleTableSelectionChanged.bind(this);
         this.handleRelationSelectionChanged = this.handleRelationSelectionChanged.bind(this);
-        this.highlightHotspots = this.highlightHotspots.bind(this);
+        this.handleRemoveSelectedClicked = this.handleRemoveSelectedClicked.bind(this);
         this.procLookup = new Map();
         this.tableLookup = new Map();
         this.nodeDegree = new Map();
@@ -40,6 +38,10 @@ export class AllDb extends React.Component {
 
     handleGraphDataViewToggle(isGraph) {
         this.props.dispatch(toggleGraphView(isGraph));
+    }
+
+    handleRemoveSelectedClicked() {
+        this.props.dispatch(removeSelectedNodes([...(this.props.selectedStoredProcedures || []), ...(this.props.selectedTables || [])]))
     }
 
     render() {
@@ -102,65 +104,17 @@ export class AllDb extends React.Component {
     }
 
     renderGraph(){
-       
-        if(this.forceGraphRef.current && this.nodes) {
-            for(let i = 0; i < this.nodes.length; i++) {
-                const node = this.nodes[i];
-                let found = false;
-                for(let j = 0; this.props.selectedStoredProcedures && j < this.props.selectedStoredProcedures.length && !found; j++) {
-                    const selectedProc = this.props.selectedStoredProcedures[j];
-                    if(selectedProc == node.id) {
-                        this.forceGraphRef.current.highlightNode(node, 0xffff00, 1.5);
-                        found = true;
-                    }
-                }
-                for(let j = 0; this.props.selectedTables && j < this.props.selectedTables.length && !found; j++) {
-                    const selectedTable = this.props.selectedTables[j];
-                    if(selectedTable == node.id) {
-                        this.forceGraphRef.current.highlightNode(node, 0x00ffff, 1.5);
-                        found = true;
-                    }
-                }
-                if(!found) {
-                    this.forceGraphRef.current.unhighlightNode(node);
-                }
-            }
-        }
-
-        if(this.forceGraphRef.current && this.links) {
-            for(let i = 0; i < this.links.length; i++) {
-                const link = this.links[i];
-                if(this.props.selectedRelations && this.props.selectedRelations.some(r => link.type.indexOf(r) > -1)){
-                    if(link.type.indexOf("select") > -1){
-                        this.forceGraphRef.current.highlightLink(link, 0xfff000, 1.25)
-                    }
-                    else if(link.type.indexOf("update") > -1) {
-                        this.forceGraphRef.current.highlightLink(link, 0x000fff, 1.25)
-                    }
-                    else if(link.type.indexOf("delete") > -1) {
-                        this.forceGraphRef.current.highlightLink(link, 0xf0f0f0, 1.25)
-                    }
-                    else if(link.type.indexOf("insert") > -1) {
-                        this.forceGraphRef.current.highlightLink(link, 0xff00ff, 1.25)
-                    }
-                    else
-                {
-                    this.forceGraphRef.current.unhighlightLink(link);
-                }
-                }
-                else
-                {
-                    this.forceGraphRef.current.unhighlightLink(link);
-                }
-            }
-        }
-
-        return <ForceGraph ref={this.forceGraphRef} nodes={this.nodes} links={this.links} width={window.innerWidth * .7} height={window.innerHeight} />
+       return <ForceGraph3D 
+        graphData={this} 
+        width={window.innerWidth * .7} 
+        height={window.innerHeight}
+        nodeAutoColorBy="type"
+        />
     }
 
     handleStoredProcSelectionChanged(selected) {
         const ids = selected.map(s => s.id);
-        this.props.dispatch(setStoredProcedureSelection(ids));
+        this.props.dispatch(setStoredProcedureSelection(selected));
     }
 
     handleTableSelectionChanged(selected) {
@@ -213,6 +167,7 @@ export class AllDb extends React.Component {
                             multiple
                             onChange={this.handleTableSelectionChanged}
                             options={this.nodes.filter(x => x.type == "table")}
+                            selected={this.selectedStoredProcedures}
                             />
                     </FormGroup>
                     <FormGroup controlId="tableSelection">
@@ -228,30 +183,15 @@ export class AllDb extends React.Component {
                         <ControlLabel>Graph/Table</ControlLabel>
                         <Switch onChange={(el, state) => this.handleGraphDataViewToggle(state)} />
                     </FormGroup>
-                    <Button onClick={(e) => this.highlightHotspots(true)}>Highlight Hotspots</Button>
+                    <FormGroup controlId="nodeActions">
+                        <ControlLabel>Node Actions</ControlLabel>
+                        <Button onClick={this.handleRemoveSelectedClicked}>Remove Selected</Button>
+                        <Button onClick={this.handleRemoveUnselectedClicked}>Remove Unselected</Button>
+                    </FormGroup>
                 </div>
                 </div>
           </form>       
         )
-    }
-
-    highlightHotspots(isOn) {
-        if(isOn) {
-            for(let a of this.nodeDegree.entries()) {
-                const id = a[0];
-                const num = a[1];
-
-                if(num > 5) {
-                    const node = this.procLookup.get(id) || this.tableLookup.get(id);
-                    if(!node)
-                        return;
-                    this.forceGraphRef.current.highlightNode(node, 0xff0000, 3);
-                }
-            }
-        }
-        else {
-            ;
-        }
     }
 
     renderTable() {

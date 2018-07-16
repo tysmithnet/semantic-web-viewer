@@ -27,3 +27,10 @@ export function setRelationSelection(relations) {
         payload: relations
     }
 }
+
+export function removeSelectedNodes(nodes) {
+    return {
+        type: ActionTypes.VIEWS.ALL_DB.ALL_DB_REMOVE_NODES_REQUESTED,
+        payload: nodes
+    }
+}
