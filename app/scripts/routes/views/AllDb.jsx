@@ -25,9 +25,6 @@ export class AllDb extends React.Component {
         this.handleTableSelectionChanged = this.handleTableSelectionChanged.bind(this);
         this.handleRelationSelectionChanged = this.handleRelationSelectionChanged.bind(this);
         this.handleRemoveSelectedClicked = this.handleRemoveSelectedClicked.bind(this);
-        this.procLookup = new Map();
-        this.tableLookup = new Map();
-        this.nodeDegree = new Map();
     }
 
     componentWillMount() {
@@ -45,43 +42,6 @@ export class AllDb extends React.Component {
     }
 
     render() {
-        if(this.props.loaded && !this.nodes) {
-            const procNodes = this
-                .props
-                .storedProcs
-                .map(x => {
-                    return {key: v4(), id: x.sp.value, name: x.title.value, type: "storedProc"}; // todo: constant value
-                });
-            procNodes.forEach(p => this.procLookup.set(p.id, p));
-
-            const tableNodes = this
-                .props
-                .tables
-                .map(x => {
-                    return {key: v4(), id: x.tb.value, name: x.title.value, type: "table"}; // todo: constant value
-                });
-                tableNodes.forEach(t => this.tableLookup.set(t.id, t));
-
-            const links = this
-                .props
-                .relations
-                .map(x => {
-                    return {key: v4(), source: x.sp.value, target: x.tb.value, type: x.rel.value}
-                });
-
-            links.forEach(l => {
-                const sourceDegree = this.nodeDegree.get(l.source) || 0;
-                const targetDegree = this.nodeDegree.get(l.target) || 0;
-                this.nodeDegree.set(l.source, sourceDegree + 1);
-                this.nodeDegree.set(l.target, targetDegree + 1);
-            })
-
-            this.nodes = [
-                ...procNodes,
-                ...tableNodes
-            ];
-            this.links = links;
-        }
         if (this.props.loaded) {
             return (
                 <div className="all-db">
@@ -157,7 +117,7 @@ export class AllDb extends React.Component {
                             labelKey="name"
                             multiple
                             onChange={this.handleStoredProcSelectionChanged}
-                            options={this.nodes.filter(x => x.type == "storedProc")}
+                            options={this.props.nodes.filter(x => x.type == "storedProc")}
                             />
                     </FormGroup>
                     <FormGroup controlId="tableSelection">
@@ -166,8 +126,8 @@ export class AllDb extends React.Component {
                             labelKey="name"
                             multiple
                             onChange={this.handleTableSelectionChanged}
-                            options={this.nodes.filter(x => x.type == "table")}
-                            selected={this.selectedStoredProcedures}
+                            options={this.props.nodes.filter(x => x.type == "table")}
+                            selected={this.props.selectedStoredProcedures}
                             />
                     </FormGroup>
                     <FormGroup controlId="tableSelection">
@@ -249,11 +209,17 @@ export class AllDb extends React.Component {
 
 /* istanbul ignore next */
 function mapStateToProps(state) {
-    return {storedProcs: state.allDb.storedProcs, 
+    return {
+        storedProcs: state.allDb.storedProcs, 
         loaded: state.allDb.loaded, 
         tables: state.allDb.tables, 
-        relations: state.allDb.relations, 
-        isGraphView: state.allDb.isGraphView, selectedStoredProcedures: state.allDb.selectedStoredProcedures, selectedTables: state.allDb.selectedTables, selectedRelations: state.allDb.selectedRelations};
+        nodes: state.allDb.nodes,
+        links: state.allDb.links, 
+        isGraphView: state.allDb.isGraphView, 
+        selectedStoredProcedures: state.allDb.selectedStoredProcedures, 
+        selectedTables: state.allDb.selectedTables, 
+        selectedRelations: state.allDb.selectedRelations
+    };
 }
 
 export default connect(mapStateToProps)(AllDb);

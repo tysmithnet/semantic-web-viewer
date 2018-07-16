@@ -16,11 +16,36 @@ export const allDbState = {
 export default {
     allDb : createReducer(allDbState, {
         [ActionTypes.VIEWS.ALL_DB.ALL_DB_LOAD_SUCESS](state, {payload}) {
+            const procNodes = payload
+                .storedProcs
+                .map(x => {
+                    return {id: x.sp.value, name: x.title.value, type: "storedProc"}; // todo: constant value
+                });
+
+            const tableNodes = payload
+                .tables
+                .map(x => {
+                    return {id: x.tb.value, name: x.title.value, type: "table"}; // todo: constant value
+                });
+
+            const relations = payload
+                .relations
+                .map(x => {
+                    return {source: x.sp.value, target: x.tb.value, type: x.rel.value}
+                });
+            const distinctRelationTypes = relations.reduce((agg, cur) => {
+                if(agg.indexOf(cur.type) == -1) {
+                    agg.push(cur.type);
+                }
+                return agg;
+            }, []);
+            this.links = relations;
             return Object.freeze({
                 ...state,
-                storedProcs: payload.storedProcs,
-                tables: payload.tables,
-                relations: payload.relations,
+                storedProcs: procNodes,
+                tables: tableNodes,
+                relations,
+                distinctRelationTypes,
                 selectedStoredProcedures: [],
                 selectedTables: [],
                 selectedRelations: [],
@@ -52,17 +77,30 @@ export default {
             });
         },
         [ActionTypes.VIEWS.ALL_DB.ALL_DB_REMOVE_NODES_REQUESTED](state, {payload}) {
-            const storedProcs = state.storedProcs.filter(f => !payload.some(n => f.id === n.id));
-            const tables = state.tables.filter(f => !payload.some(n => f.id === n.id));
-            const relations = state.relations.filter(r => !payload.some(n => r.source === n.id || r.target == n.id));
+            const storedProcs = state
+                .storedProcs
+                .filter(f => !payload.some(n => f.id === n.id));
+            const tables = state
+                .tables
+                .filter(f => !payload.some(n => f.id === n.id));
+            const links = state
+                .relations
+                .filter(r => !payload.some(n => r.source === n.id || r.target == n.id));
             return Object.freeze({
                 ...state,
                 storedProcs,
                 tables,
-                relations,
-                selectedStoredProcedures: state.selectedStoredProcedures.filter(sp => storedProcs.some(x => x.id == sp.id)),
-                selectedTables: state.selectedTables.filter(sp => tables.some(x => x.id == sp.id)),
-                selectedRelations: state.selectedRelations.filter(sp => relations.some(x => x.id == sp.id))
+                links,
+                nodes: [...storedProcs, ...tables],
+                selectedStoredProcedures: state
+                    .selectedStoredProcedures
+                    .filter(sp => storedProcs.some(x => x.id == sp.id)),
+                selectedTables: state
+                    .selectedTables
+                    .filter(sp => tables.some(x => x.id == sp.id)),
+                selectedRelations: state
+                    .selectedRelations
+                    .filter(sp => links.some(x => x.id == sp.id))
             });
         }
     })
