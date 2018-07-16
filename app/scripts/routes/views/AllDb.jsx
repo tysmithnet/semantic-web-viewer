@@ -11,6 +11,8 @@ import ForceGraph from 'components/ForceGraph';
 import { isThisHour } from 'date-fns';
 import { Map } from 'core-js';
 import {Typeahead} from 'react-bootstrap-typeahead';
+import Switch from 'react-bootstrap-switch';
+import '../../../../node_modules/react-bootstrap-switch/dist/css/bootstrap3/react-bootstrap-switch.css';
 
 export class AllDb extends React.Component {
     static propTypes = {
@@ -195,10 +197,6 @@ export class AllDb extends React.Component {
             <form>
                 <div className="container">
                     <div className="col-sm-12">
-                    <ButtonGroup>
-                        <Button onClick={(e) => this.handleGraphDataViewToggle(true)}>Graph</Button>
-                        <Button onClick={(e) => this.handleGraphDataViewToggle(false)}>Table</Button>
-                    </ButtonGroup>
                     <FormGroup controlId="storedProceduresSelection">
                         <ControlLabel>Stored Procedures</ControlLabel>
                         <Typeahead
@@ -225,6 +223,10 @@ export class AllDb extends React.Component {
                             <option key="update" value="update">Update</option>
                             <option key="delete" value="delete">Delete</option>
                         </FormControl>
+                    </FormGroup>
+                    <FormGroup controlId="graphTableView">
+                        <ControlLabel>Graph/Table</ControlLabel>
+                        <Switch onChange={(el, state) => this.handleGraphDataViewToggle(state)} />
                     </FormGroup>
                     <Button onClick={(e) => this.highlightHotspots(true)}>Highlight Hotspots</Button>
                 </div>

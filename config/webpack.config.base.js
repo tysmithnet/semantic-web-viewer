@@ -92,10 +92,14 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.scss$/,
+        test: /\.s?css$/,
         loader: isProd ? ExtractText.extract({
           use: cssLoaders.slice(1),
         }) : cssLoaders,
+      },
+      {
+        test: /\.less$/,
+        loader: 'less'
       },
       {
         test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
