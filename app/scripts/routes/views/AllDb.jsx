@@ -19,8 +19,9 @@ import {
 import {Map} from 'core-js';
 import {Typeahead} from 'react-bootstrap-typeahead';
 import Switch from 'react-bootstrap-switch';
+import BootstrapTable from 'react-bootstrap-table-next';
 import '../../../../node_modules/react-bootstrap-switch/dist/css/bootstrap3/react-bootstrap-switch.css';
-import "C:\\git\\semantic-web-viewer\\node_modules\\react-bootstrap-table-next\\dist\\react-bootstrap-table2.css";
+import "../../../../node_modules/react-bootstrap-table-next/dist/react-bootstrap-table2.css";
 export class AllDb extends React.Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired
@@ -84,9 +85,15 @@ export class AllDb extends React.Component {
                 for(let j = 0; j < this.props.selectedStoredProcedures.length; j++) {
                     const selected = this.props.selectedStoredProcedures[j];
                     if(link.source == selected) {
-                        nodes.push(link.source);
-                        nodes.push(link.target);
-                        links.push(link);
+                        if(links.indexOf(link) == -1) {
+                            links.push(link);
+                        }
+                        if(nodes.indexOf(link.source) == -1) {
+                            nodes.push(link.source);
+                        } 
+                        if(nodes.indexOf(link.target) == -1) {
+                            nodes.push(link.target);
+                        } 
                     }
                 }
             }
@@ -159,7 +166,17 @@ export class AllDb extends React.Component {
             graphData={{nodes, links}}
             width={window.innerWidth * .7}
             height={window.innerHeight}
-            nodeAutoColorBy="type"/>
+            nodeAutoColorBy="type"
+            onNodeClick={(n) => {
+                debugger;
+                if(n.type == "storedProc" && this.props.selectedStoredProcedures.indexOf(n) == -1) {
+                    this.handleStoredProcSelectionChanged([...(this.props.selectedStoredProcedures || []), n])
+                }
+                else if(n.type == "table" && this.props.selectedTables.indexOf(n) == -1) {
+                    this.handleTableSelectionChanged([...(this.props.selectedTables || []), n])
+                }
+            }}
+            />
     }
 
     handleStoredProcSelectionChanged(selected) {
@@ -213,7 +230,8 @@ export class AllDb extends React.Component {
                                 options={this
                                 .props
                                 .nodes
-                                .filter(x => x.type == "storedProc")}/>
+                                .filter(x => x.type == "storedProc")}
+                                selected={this.props.selectedStoredProcedures}/>
                         </FormGroup>
                         <FormGroup controlId="relationSelection">
                             <ControlLabel>Relations</ControlLabel>
@@ -248,27 +266,32 @@ export class AllDb extends React.Component {
     }
 
     renderTable() {
+        const columns = [{
+            dataField: 'proc',
+            text: 'Stored Proc',
+            sort: true
+        },{
+            dataField: 'rel',
+            text: 'Relation',
+            sort: true
+        },{
+            dataField: 'table',
+            text: 'Table',
+            sort: true
+        }]
         const graphData = this.getGraphData();
-        return (
-            <table>
-                <thead>
-                    <tr>
-                        <th>Stored Procedure</th>
-                        <th>Operation</th>
-                        <th>Table</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {graphData.links.map(r => {
-                        return <tr>
-                            <td>{r.source.name}</td>
-                            <td>{r.name}</td>
-                            <td>{r.target.name}</td>
-                        </tr>
-                    })}
-                </tbody>
-            </table>
-        );
+        const tableData = graphData.links.map(l => {
+        {
+            const id = `${l.source.name}_${l.name}_${l.target.name}`;
+            return {
+                id,
+                proc: l.source.name,
+                rel: l.name,
+                table: l.target.name
+            }   
+        }
+        })
+        return <BootstrapTable keyField='id' data={tableData} columns={columns} />
     }
 }
 
