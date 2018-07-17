@@ -93,6 +93,40 @@ export class AllDb extends React.Component {
     }
 
     renderGraph() {
+        if(this.props.selectedStoredProcedures.length || this.props.selectedTables.length){
+            const neededNodes = [];
+            const activeLinks = this.props.links.filter(l => {
+                const isSelectedProc = this.props.selectedStoredProcedures.some(sp => sp.id == l.source.id || sp.id == l.target.id);
+                if(isSelectedProc) {
+                    if(neededNodes.indexOf(l.source) == -1) {
+                        neededNodes.push(l.source);
+                    }
+                    if(neededNodes.indexOf(l.target) == -1) {
+                        neededNodes.push(l.target);
+                    }
+                    return true;
+                }
+                const isSelectedTable = this.props.selectedTables.some(t => t.id == l.source.id || t.id == l.target.id);
+                if(isSelectedTable) {
+                    if(neededNodes.indexOf(l.source) == -1) {
+                        neededNodes.push(l.source);
+                    }
+                    if(neededNodes.indexOf(l.target) == -1) {
+                        neededNodes.push(l.target);
+                    }
+                    return true;
+                }
+                return false;
+            })
+            return <ForceGraph3D
+                graphData={{
+                nodes: [...(this.props.selectedStoredProcedures || 0), ...(this.selectedTables || 0), ...neededNodes],
+                links: activeLinks
+            }}
+                width={window.innerWidth * .7}
+                height={window.innerHeight}
+                nodeAutoColorBy="type"/>    
+        }
         return <ForceGraph3D
             graphData={{
             nodes: this.props.nodes,
