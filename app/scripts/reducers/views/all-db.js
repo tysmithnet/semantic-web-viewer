@@ -40,7 +40,7 @@ export default {
             const distinctRelationTypes = links.reduce((agg, cur) => {
                 if(!seenTypes.has(cur.name)) {
                     seenTypes.add(cur.name);
-                    agg.push(cur);
+                    agg.push(cur.name);
                 }
                 return agg;
             }, []);
@@ -88,31 +88,10 @@ export default {
                 selectedRelations: payload
             });
         },
-        [ActionTypes.VIEWS.ALL_DB.ALL_DB_REMOVE_NODES_REQUESTED](state, {payload}) {
-            const storedProcs = state
-                .storedProcs
-                .filter(f => !payload.some(n => f.id === n.id));
-            const tables = state
-                .tables
-                .filter(f => !payload.some(n => f.id === n.id));
-            const links = state
-                .relations
-                .filter(r => !payload.some(n => r.source === n.id || r.target == n.id));
+        [ActionTypes.VIEWS.ALL_DB.ALL_DB_RELATION_TYPES_SELECTION_CHANGED](state, {payload}) {
             return Object.freeze({
                 ...state,
-                storedProcs,
-                tables,
-                links,
-                nodes: [...storedProcs, ...tables],
-                selectedStoredProcedures: state
-                    .selectedStoredProcedures
-                    .filter(sp => storedProcs.some(x => x.id == sp.id)),
-                selectedTables: state
-                    .selectedTables
-                    .filter(sp => tables.some(x => x.id == sp.id)),
-                selectedRelations: state
-                    .selectedRelations
-                    .filter(sp => links.some(x => x.id == sp.id))
+                selectedRelationTypes: payload
             });
         }
     })

@@ -3,7 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {ForceGraph3D} from 'react-force-graph';
 import {ActionTypes} from '../../constants';
-import {toggleGraphView, setStoredProcedureSelection, setTableSelection, setRelationSelection, removeSelectedNodes} from 'actions/views/all-db';
+import {toggleGraphView, setStoredProcedureSelection, setTableSelection, setRelationSelection, removeSelectedNodes, setRelationTypesSelection} from 'actions/views/all-db';
 import cx from 'classnames';
 import {v4} from "uuid";
 import {
@@ -44,6 +44,7 @@ export class AllDb extends React.Component {
         this.handleRemoveSelectedClicked = this
             .handleRemoveSelectedClicked
             .bind(this);
+        this.handleRelationTypesSelectionChanged = this.handleRelationTypesSelectionChanged.bind(this);
     }
 
     componentWillMount() {
@@ -67,8 +68,18 @@ export class AllDb extends React.Component {
             ]))
     }
  
+    getGraphData() {
+        const nodes = [];
+        const links = [];
+
+        
+
+        return {nodes, links};
+    }
+
     render() {
         if (this.props.isLoaded) {
+            const graphData = this.getGraphData();
             return (
                 <div className="all-db">
                     <div className="controls">
@@ -92,45 +103,11 @@ export class AllDb extends React.Component {
         }
     }
 
-    renderGraph() {
-        if(this.props.selectedStoredProcedures.length || this.props.selectedTables.length){
-            const neededNodes = [];
-            const activeLinks = this.props.links.filter(l => {
-                const isSelectedProc = this.props.selectedStoredProcedures.some(sp => sp.id == l.source.id || sp.id == l.target.id);
-                if(isSelectedProc) {
-                    if(neededNodes.indexOf(l.source) == -1) {
-                        neededNodes.push(l.source);
-                    }
-                    if(neededNodes.indexOf(l.target) == -1) {
-                        neededNodes.push(l.target);
-                    }
-                    return true;
-                }
-                const isSelectedTable = this.props.selectedTables.some(t => t.id == l.source.id || t.id == l.target.id);
-                if(isSelectedTable) {
-                    if(neededNodes.indexOf(l.source) == -1) {
-                        neededNodes.push(l.source);
-                    }
-                    if(neededNodes.indexOf(l.target) == -1) {
-                        neededNodes.push(l.target);
-                    }
-                    return true;
-                }
-                return false;
-            })
-            return <ForceGraph3D
-                graphData={{
-                nodes: [...(this.props.selectedStoredProcedures || 0), ...(this.selectedTables || 0), ...neededNodes],
-                links: activeLinks
-            }}
-                width={window.innerWidth * .7}
-                height={window.innerHeight}
-                nodeAutoColorBy="type"/>    
-        }
+    renderGraph(nodes, links) {
         return <ForceGraph3D
             graphData={{
-            nodes: this.props.nodes,
-            links: this.props.links
+            nodes,
+            links,
         }}
             width={window.innerWidth * .7}
             height={window.innerHeight}
@@ -149,18 +126,14 @@ export class AllDb extends React.Component {
             .dispatch(setTableSelection(selected));
     }
 
-    handleRelationSelectionChanged(event) {
-        const selected = [];
-        if (event && event.target && event.target.options) {
-            for (let i = 0; i < event.target.options.length; i++) {
-                const option = event.target.options[i];
-                if (option.selected) 
-                    selected.push(option.value);
-                }
-            }
+    handleRelationSelectionChanged(selected) {
         this
             .props
             .dispatch(setRelationSelection(selected));
+    }
+
+    handleRelationTypesSelectionChanged(selected) {
+        this.props.dispatch(setRelationTypesSelection(selected));
     }
 
     renderControls() {
@@ -201,7 +174,8 @@ export class AllDb extends React.Component {
                                 labelKey="name"
                                 multiple
                                 options={this.props.distinctRelationTypes} 
-                                selected={this.props.selectedRelationTypes}/>
+                                selected={this.props.selectedRelationTypes}
+                                onChange={this.handleRelationTypesSelectionChanged}/>
                         </FormGroup>
                         <FormGroup controlId="tableSelection">
                             <ControlLabel>Tables</ControlLabel>
@@ -220,11 +194,6 @@ export class AllDb extends React.Component {
                             <ControlLabel>Graph/Table</ControlLabel>
                             <Switch onChange={(el, state) => this.handleGraphDataViewToggle(!this.props.isGraphView)}/>
                         </FormGroup>
-                        <FormGroup controlId="nodeActions">
-                            <ControlLabel>Node Actions</ControlLabel>
-                            <Button onClick={this.handleRemoveSelectedClicked}>Remove Selected</Button>
-                            <Button onClick={this.handleRemoveUnselectedClicked}>Remove Unselected</Button>
-                        </FormGroup>
                     </div>
                 </div>
             </form>
@@ -237,7 +206,13 @@ export class AllDb extends React.Component {
             .props
             .links
             .filter(l => {
-                if (this.props.selectedStoredProcedures.length || this.props.selectedTables.length) {
+                if (this.props.selectedStoredProcedures.length || this.props.selectedRelationTypes.length || this.props.selectedTables.lengths) {
+                    for(let i = 0; i < this.props.selectedRelationTypes.length; i++) {
+                        const selectedRelationType = this.props.selectedRelationTypes[i];
+                        if(selectedRelationType == l.rel) {
+                            return true;
+                        }
+                    }
                     for(let i = 0; i < this.props.selectedStoredProcedures.length; i++) {
                         const selectedProc = this.props.selectedStoredProcedures[i];
                         if(selectedProc.id == l.source.id || selectedProc.id == l.target.id)

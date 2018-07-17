@@ -28,6 +28,13 @@ export function setRelationSelection(relations) {
     }
 }
 
+export function setRelationTypesSelection(relationTypes) {
+    return {
+        type: ActionTypes.VIEWS.ALL_DB.ALL_DB_RELATION_TYPES_SELECTION_CHANGED,
+        payload: relationTypes
+    }
+}
+
 export function removeSelectedNodes(nodes) {
     return {
         type: ActionTypes.VIEWS.ALL_DB.ALL_DB_REMOVE_NODES_REQUESTED,
