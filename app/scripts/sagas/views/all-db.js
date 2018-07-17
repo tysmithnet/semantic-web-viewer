@@ -17,7 +17,29 @@ function * loadDataAsync() {
                 ]
             }
         };
+
+        const modifications = {
+            "head": {
+                "vars": ["sp", "mod", "user"]
+            },
+            "results": {
+                "bindings": [
+                 
+                ]
+            }
+        };
     
+        const teams = {
+            "head": {
+                "vars": ["user", "team"]
+            },
+            "results": {
+                "bindings": [
+                 
+                ]
+            }
+        };
+
         const allTables = {
             "head": {
                 "vars": ["tb", "title"]

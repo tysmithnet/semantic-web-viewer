@@ -9772,6 +9772,10 @@ react-bootstrap-table-next@^0.1.15:
   dependencies:
     classnames "2.2.5"
 
+react-bootstrap-table2-filter@^0.3.0:
+  version "0.3.0"
+  resolved "http://ci-master:4873/react-bootstrap-table2-filter/-/react-bootstrap-table2-filter-0.3.0.tgz#93d95d12660d44007c4fc5dc1dd7350166ba03c5"
+
 react-bootstrap-typeahead@^3.1.5:
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/react-bootstrap-typeahead/-/react-bootstrap-typeahead-3.1.5.tgz#4761300571334ca447d7c7e9b85864205fccd8c0"

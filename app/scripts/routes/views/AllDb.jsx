@@ -20,6 +20,7 @@ import {Map} from 'core-js';
 import {Typeahead} from 'react-bootstrap-typeahead';
 import Switch from 'react-bootstrap-switch';
 import BootstrapTable from 'react-bootstrap-table-next';
+import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import '../../../../node_modules/react-bootstrap-switch/dist/css/bootstrap3/react-bootstrap-switch.css';
 import "../../../../node_modules/react-bootstrap-table-next/dist/react-bootstrap-table2.css";
 export class AllDb extends React.Component {
@@ -249,10 +250,10 @@ export class AllDb extends React.Component {
                                 multiple
                                 onChange={this.handleTableSelectionChanged}
                                 options={this
-                                .props
-                                .nodes
-                                .filter(x => x.type == "table")}
-                                selected={this.props.selectedTables}/>
+                                    .props
+                                    .nodes
+                                    .filter(x => x.type == "table")}
+                                    selected={this.props.selectedTables}/>
                         </FormGroup>
                         
                         <FormGroup controlId="graphTableView">
@@ -269,15 +270,18 @@ export class AllDb extends React.Component {
         const columns = [{
             dataField: 'proc',
             text: 'Stored Proc',
-            sort: true
+            sort: true,
+            filter: textFilter()
         },{
             dataField: 'rel',
             text: 'Relation',
-            sort: true
+            sort: true,
+            filter: textFilter()
         },{
             dataField: 'table',
             text: 'Table',
-            sort: true
+            sort: true,
+            filter: textFilter()
         }]
         const graphData = this.getGraphData();
         const tableData = graphData.links.map(l => {
@@ -291,7 +295,7 @@ export class AllDb extends React.Component {
             }   
         }
         })
-        return <BootstrapTable keyField='id' data={tableData} columns={columns} />
+        return <BootstrapTable keyField='id' data={tableData} columns={columns} filter={filterFactory()} />
     }
 }
 
