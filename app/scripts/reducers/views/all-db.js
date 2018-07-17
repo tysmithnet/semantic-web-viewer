@@ -33,7 +33,7 @@ export default {
             const links = payload
                 .relations
                 .map(x => {
-                    return {source: x.sp.value, target: x.tb.value, type: x.rel.value}
+                    return {source: x.sp.value, target: x.tb.value, type: x.rel.value, name: x.relType.value}
                 });
             const distinctRelationTypes = links.reduce((agg, cur) => {
                 if(agg.indexOf(cur.type) == -1) {
