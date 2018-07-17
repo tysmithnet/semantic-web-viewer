@@ -42,7 +42,7 @@ export class AllDb extends React.Component {
     }
 
     render() {
-        if (this.props.loaded) {
+        if (this.props.isLoaded) {
             return (
                 <div className="all-db">
                     <div className="controls">
@@ -65,7 +65,7 @@ export class AllDb extends React.Component {
 
     renderGraph(){
        return <ForceGraph3D 
-        graphData={this} 
+        graphData={{nodes: this.props.nodes, links: this.props.links}} 
         width={window.innerWidth * .7} 
         height={window.innerHeight}
         nodeAutoColorBy="type"
@@ -73,12 +73,10 @@ export class AllDb extends React.Component {
     }
 
     handleStoredProcSelectionChanged(selected) {
-        const ids = selected.map(s => s.id);
         this.props.dispatch(setStoredProcedureSelection(selected));
     }
 
     handleTableSelectionChanged(selected) {
-        const ids = selected.map(s => s.id);
         this.props.dispatch(setTableSelection(ids));
     }
 
@@ -159,11 +157,11 @@ export class AllDb extends React.Component {
         const seenTables = {};
         const rows = [];
         
-        for(let i = 0; i < this.props.relations.length; i++){
-            const rel = this.props.relations[i];
-            seenProcs[rel.sp.value] = true;
-            seenTables[rel.tb.value] = true;
-            rows.push([rel.sp.value, rel.rel.value, rel.tb.value]);
+        for(let i = 0; i < this.props.links.length; i++){
+            const rel = this.props.links[i];
+            seenProcs[rel.source] = true;
+            seenTables[rel.target] = true;
+            rows.push([rel.source, rel.type, rel.target]);
         }
 
         for(let i = 0; i < this.props.storedProcs.length; i++) {
@@ -178,12 +176,8 @@ export class AllDb extends React.Component {
                 rows.push([null, null, table.id]);
         }
 
-        for(let i = 0; i < rows.count; i++) {
-            rows[i].key = v4();
-        }
-
         function renderRow(row, index) {
-            return (<tr key={row.key}>
+            return (<tr key={row.id}>
                 <td>{row[0]}</td>
                 <td>{row[1]}</td>
                 <td>{row[2]}</td>
@@ -211,10 +205,11 @@ export class AllDb extends React.Component {
 function mapStateToProps(state) {
     return {
         storedProcs: state.allDb.storedProcs, 
-        loaded: state.allDb.loaded, 
+        isLoaded: state.allDb.isLoaded, 
         tables: state.allDb.tables, 
         nodes: state.allDb.nodes,
         links: state.allDb.links, 
+        distinctRelationTypes: state.allDb.distinctRelationTypes,
         isGraphView: state.allDb.isGraphView, 
         selectedStoredProcedures: state.allDb.selectedStoredProcedures, 
         selectedTables: state.allDb.selectedTables, 
