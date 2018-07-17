@@ -34,7 +34,11 @@ export default {
             const links = payload
                 .relations
                 .map(x => {
-                    return {source: x.sp.value, target: x.tb.value, type: x.rel.value, name: x.relType.value}
+                    return {
+                        source: storedProcs.filter(sp => sp.id == x.sp.value)[0], 
+                        target: tables.filter(t => t.id == x.tb.value)[0], 
+                        type: x.rel.value, name: x.relType.value
+                    }
                 });
             const seenTypes = new Set();
             const distinctRelationTypes = links.reduce((agg, cur) => {

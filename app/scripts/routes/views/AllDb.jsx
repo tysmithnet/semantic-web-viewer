@@ -69,10 +69,61 @@ export class AllDb extends React.Component {
     }
  
     getGraphData() {
+        if(this.props.selectedStoredProcedures.length == 0 
+            && this.props.selectedTables.length == 0
+            && this.props.selectedRelationTypes.length == 0){
+                return {nodes: this.props.nodes, links: this.props.links}
+            }
+
         const nodes = [];
         const links = [];
 
-        
+        for(let i = 0; i < this.props.links.length; i++) {
+            const link = this.props.links[i];
+            if(this.props.selectedStoredProcedures.length) {
+                for(let j = 0; j < this.props.selectedStoredProcedures.length; j++) {
+                    const selected = this.props.selectedStoredProcedures[j];
+                    if(link.source == selected) {
+                        nodes.push(link.source);
+                        nodes.push(link.target);
+                        links.push(link);
+                    }
+                }
+            }
+            if(this.props.selectedTables.length) {
+                for(let j = 0; j < this.props.selectedTables.length; j++) {
+                    const selected = this.props.selectedTables[j];
+                    if(link.target == selected) {
+                        if(links.indexOf(link) == -1) {
+                            links.push(link);
+                        }
+                        if(nodes.indexOf(link.source) == -1) {
+                            nodes.push(link.source);
+                        } 
+                        if(nodes.indexOf(link.target) == -1) {
+                            nodes.push(link.target);
+                        } 
+                    }
+                }
+            }
+            if(this.props.selectedRelationTypes.length) {
+                for(let j = 0; j < this.props.selectedRelationTypes.length; j++) {
+                    const type = this.props.selectedRelationTypes[j];
+                    if(link.name != type) {
+                        continue;
+                    }
+                    if(links.indexOf(link) == -1) {
+                        links.push(link);
+                    }
+                    if(nodes.indexOf(link.source) == -1) {
+                        nodes.push(link.source);
+                    } 
+                    if(nodes.indexOf(link.target) == -1) {
+                        nodes.push(link.target);
+                    } 
+                }
+            }
+        }
 
         return {nodes, links};
     }
@@ -90,7 +141,7 @@ export class AllDb extends React.Component {
                             className={cx('graph', {
                             'hidden': !this.props.isGraphView
                         })}>
-                            {this.renderGraph()}
+                            {this.renderGraph(graphData.nodes, graphData.links)}
                         </div>
                         <div className={cx('data', {'hidden': this.props.isGraphView})}>
                             {this.renderTable()}
@@ -105,10 +156,7 @@ export class AllDb extends React.Component {
 
     renderGraph(nodes, links) {
         return <ForceGraph3D
-            graphData={{
-            nodes,
-            links,
-        }}
+            graphData={{nodes, links}}
             width={window.innerWidth * .7}
             height={window.innerHeight}
             nodeAutoColorBy="type"/>
@@ -152,7 +200,6 @@ export class AllDb extends React.Component {
                 </option>
             );
         }
-
         return (
             <form>
                 <div className="container">
@@ -201,38 +248,7 @@ export class AllDb extends React.Component {
     }
 
     renderTable() {
-        const rows = [];
-        this
-            .props
-            .links
-            .filter(l => {
-                if (this.props.selectedStoredProcedures.length || this.props.selectedRelationTypes.length || this.props.selectedTables.lengths) {
-                    for(let i = 0; i < this.props.selectedRelationTypes.length; i++) {
-                        const selectedRelationType = this.props.selectedRelationTypes[i];
-                        if(selectedRelationType == l.rel) {
-                            return true;
-                        }
-                    }
-                    for(let i = 0; i < this.props.selectedStoredProcedures.length; i++) {
-                        const selectedProc = this.props.selectedStoredProcedures[i];
-                        if(selectedProc.id == l.source.id || selectedProc.id == l.target.id)
-                        {
-                            return true;
-                        }
-                    }
-                    for(let i = 0; i < this.props.selectedTables.length; i++){
-                        const selectedTable = this.props.selectedTables[i];
-                        if(selectedTable.id == l.source.id || selectedTable.id == l.target.id){
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-                return true;
-            })
-            .forEach(l => {
-                rows.push([l.source, l.name, l.target]);
-            });
+        const graphData = this.getGraphData();
         return (
             <table>
                 <thead>
@@ -243,11 +259,11 @@ export class AllDb extends React.Component {
                     </tr>
                 </thead>
                 <tbody>
-                    {rows.map(r => {
+                    {graphData.links.map(r => {
                         return <tr>
-                            <td>{r[0].name}</td>
-                            <td>{r[1]}</td>
-                            <td>{r[2].name}</td>
+                            <td>{r.source.name}</td>
+                            <td>{r.name}</td>
+                            <td>{r.target.name}</td>
                         </tr>
                     })}
                 </tbody>
