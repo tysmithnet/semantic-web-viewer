@@ -20,7 +20,7 @@ import {Map} from 'core-js';
 import {Typeahead} from 'react-bootstrap-typeahead';
 import Switch from 'react-bootstrap-switch';
 import '../../../../node_modules/react-bootstrap-switch/dist/css/bootstrap3/react-bootstrap-switch.css';
-
+import "C:\\git\\semantic-web-viewer\\node_modules\\react-bootstrap-table-next\\dist\\react-bootstrap-table2.css";
 export class AllDb extends React.Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired
@@ -66,7 +66,7 @@ export class AllDb extends React.Component {
                 ...(this.props.selectedTables || [])
             ]))
     }
-
+ 
     render() {
         if (this.props.isLoaded) {
             return (
@@ -195,6 +195,14 @@ export class AllDb extends React.Component {
                                 .nodes
                                 .filter(x => x.type == "storedProc")}/>
                         </FormGroup>
+                        <FormGroup controlId="relationSelection">
+                            <ControlLabel>Relations</ControlLabel>
+                            <Typeahead
+                                labelKey="name"
+                                multiple
+                                options={this.props.distinctRelationTypes} 
+                                selected={this.props.selectedRelationTypes}/>
+                        </FormGroup>
                         <FormGroup controlId="tableSelection">
                             <ControlLabel>Tables</ControlLabel>
                             <Typeahead
@@ -207,18 +215,7 @@ export class AllDb extends React.Component {
                                 .filter(x => x.type == "table")}
                                 selected={this.props.selectedTables}/>
                         </FormGroup>
-                        <FormGroup controlId="tableSelection">
-                            <ControlLabel>Relations</ControlLabel>
-                            <FormControl
-                                componentClass="select"
-                                multiple
-                                onChange={this.handleRelationSelectionChanged}>
-                                <option key="select" value="select">Select</option>
-                                <option key="insert" value="insert">Insert</option>
-                                <option key="update" value="update">Update</option>
-                                <option key="delete" value="delete">Delete</option>
-                            </FormControl>
-                        </FormGroup>
+                        
                         <FormGroup controlId="graphTableView">
                             <ControlLabel>Graph/Table</ControlLabel>
                             <Switch onChange={(el, state) => this.handleGraphDataViewToggle(!this.props.isGraphView)}/>
@@ -296,6 +293,7 @@ function mapStateToProps(state) {
         isGraphView: state.allDb.isGraphView,
         selectedStoredProcedures: state.allDb.selectedStoredProcedures,
         selectedTables: state.allDb.selectedTables,
+        selectedRelationTypes: state.allDb.selectedRelationTypes,
         selectedRelations: state.allDb.selectedRelations
     };
 }

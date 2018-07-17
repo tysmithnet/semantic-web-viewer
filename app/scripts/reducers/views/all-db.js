@@ -11,6 +11,7 @@ export const allDbState = {
     links: [],
     selectedStoredProcedures: [],
     selectedTables: [],
+    selectedRelationTypes: [],
     selectedRelations: [],
     isLoaded: false
 };
@@ -35,9 +36,11 @@ export default {
                 .map(x => {
                     return {source: x.sp.value, target: x.tb.value, type: x.rel.value, name: x.relType.value}
                 });
+            const seenTypes = new Set();
             const distinctRelationTypes = links.reduce((agg, cur) => {
-                if(agg.indexOf(cur.type) == -1) {
-                    agg.push(cur.type);
+                if(!seenTypes.has(cur.name)) {
+                    seenTypes.add(cur.name);
+                    agg.push(cur);
                 }
                 return agg;
             }, []);
@@ -58,7 +61,7 @@ export default {
                     .filter(sp => tables.some(x => x.id == sp.id)),
                 selectedRelations: state
                     .selectedRelations
-                    .filter(sp => links.some(x => x.id == sp.id))
+                    .filter(r => links.some(x => x.id == r.source.id || r.target.id == x.id))
             });
         },
         [ActionTypes.VIEWS.ALL_DB.ALL_DB_TOGGLE_GRAPH_VIEW](state, {payload}) {
