@@ -205,21 +205,6 @@ export class AllDb extends React.Component {
     }
 
     renderControls() {
-        function createProcOption(storedProc) {
-            return (
-                <option key={storedProc.sp.value} value={storedProc.sp.value}>
-                    {storedProc.title.value}
-                </option>
-            );
-        }
-
-        function createTableOption(table) {
-            return (
-                <option key={table.tb.value} value={table.tb.value}>
-                    {table.title.value}
-                </option>
-            );
-        }
         return (
             <form>
                 <div className="container">
@@ -261,6 +246,13 @@ export class AllDb extends React.Component {
                         <FormGroup controlId="graphTableView">
                             <ControlLabel>Graph/Table</ControlLabel>
                             <Switch onChange={(el, state) => this.handleGraphDataViewToggle(!this.props.isGraphView)}/>
+                        </FormGroup>
+                        <FormGroup controlId="clearSelections">
+                            <Button onClick={(e,s) => {
+                                this.handleStoredProcSelectionChanged([]);
+                                this.handleRelationTypesSelectionChanged([]);
+                                this.handleTableSelectionChanged([]);
+                            }}>Clear</Button>
                         </FormGroup>
                     </div>
                 </div>
