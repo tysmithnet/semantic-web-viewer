@@ -24,18 +24,106 @@ function * loadDataAsync() {
             },
             "results": {
                 "bindings": [
-                 
+                    {
+                        "sp": {
+                            "type": "uri",
+                            "value": "http://example.org/sp/sp_0"
+                        },
+                        "mod": {
+                            "type": "uri",
+                            "value": "http://example.org/mod/edit"
+                        },
+                        "modname": {
+                            "type": "literal",
+                            "value": "edit"
+                        },
+                        "user": {
+                            "type": "uri",
+                            "value": "http://example.org/user/tsmith"
+                        }
+                    },
+                    {
+                        "sp": {
+                            "type": "uri",
+                            "value": "http://example.org/sp/sp_1"
+                        },
+                        "mod": {
+                            "type": "uri",
+                            "value": "http://example.org/mod/edit"
+                        },
+                        "modname": {
+                            "type": "literal",
+                            "value": "edit"
+                        },
+                        "user": {
+                            "type": "uri",
+                            "value": "http://example.org/user/tsmith"
+                        }
+                    },
                 ]
             }
         };
     
         const teams = {
             "head": {
-                "vars": ["user", "team"]
+                "vars": ["user", "username", "team", "teamname"]
             },
             "results": {
                 "bindings": [
-                 
+                    {
+                        "user": {
+                            "type": "uri",
+                            "value": "http://example.org/users/tsmith"
+                        },
+                        "username": {
+                            "type": "literal",
+                            "value": "tsmith"
+                        },
+                        "team": {
+                            "type": "uri",
+                            "value": "http://example.org/teams/techprojects"
+                        },
+                        "teamname": {
+                            "type": "literal",
+                            "value": "Tech Projects"
+                        }
+                    },
+                    {
+                        "user": {
+                            "type": "uri",
+                            "value": "http://example.org/users/tsmith"
+                        },
+                        "username": {
+                            "type": "literal",
+                            "value": "tsmith"
+                        },
+                        "team": {
+                            "type": "uri",
+                            "value": "http://example.org/teams/lms"
+                        },
+                        "teamname": {
+                            "type": "literal",
+                            "value": "LMS"
+                        }
+                    },
+                    {
+                        "user": {
+                            "type": "uri",
+                            "value": "http://example.org/users/sbrown"
+                        },
+                        "username": {
+                            "type": "literal",
+                            "value": "sbrown"
+                        },
+                        "team": {
+                            "type": "uri",
+                            "value": "http://example.org/teams/techprojects"
+                        },
+                        "teamname": {
+                            "type": "literal",
+                            "value": "Tech Projects"
+                        }
+                    },
                 ]
             }
         };

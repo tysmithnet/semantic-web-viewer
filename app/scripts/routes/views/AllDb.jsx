@@ -169,7 +169,6 @@ export class AllDb extends React.Component {
             height={window.innerHeight}
             nodeAutoColorBy="type"
             onNodeClick={(n) => {
-                debugger;
                 if(n.type == "storedProc" && this.props.selectedStoredProcedures.indexOf(n) == -1) {
                     this.handleStoredProcSelectionChanged([...(this.props.selectedStoredProcedures || []), n])
                 }
