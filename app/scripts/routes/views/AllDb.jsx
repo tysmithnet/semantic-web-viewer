@@ -221,11 +221,12 @@ export class AllDb extends React.Component {
             nodeAutoColorBy="type"
             linkColor={link => {
                 if(link.type == "http://example.org/rel/read") {
-                    return "#ff0000"
+                    return "deeppink"
                 }
                 else if(link.type == "http://example.org/rel/write") {
-                    return "#00ff00"
+                    return "green"
                 }
+                return false;
             }}
             linkWidth={2}
             nodeThreeObject={node => {
@@ -411,23 +412,20 @@ export class AllDb extends React.Component {
 
     renderTable() {
         const columns = [{
-            dataField: 'procName',
-            text: 'Stored Proc',
+            dataField: 'subjectName',
+            text: 'Subject',
             sort: true,
             filter: textFilter(),
-            formatter: this.columnFormatterProc
         },{
             dataField: 'relName',
             text: 'Relation',
             sort: true,
             filter: textFilter(),
-            formatter: this.columnFormatterRel
         },{
-            dataField: 'tableName',
-            text: 'Table',
+            dataField: 'targetName',
+            text: 'Target',
             sort: true,
             filter: textFilter(),
-            formatter: this.columnFormatterTable
         }]
         const graphData = this.getGraphData();
         const tableData = graphData.links.map(l => {
@@ -435,12 +433,12 @@ export class AllDb extends React.Component {
             const id = v4();
             return {
                 id,
-                proc: l.source,
-                procName: l.source.name,
+                subject: l.source,
+                subjectName: l.source.name,
                 rel: l,
                 relName: l.name,
-                table: l.target,
-                tableName: l.target.name,
+                target: l.target,
+                targetName: l.target.name,
             }   
         }
         })
