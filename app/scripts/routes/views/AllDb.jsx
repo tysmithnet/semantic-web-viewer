@@ -3,7 +3,8 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {ForceGraph3D} from 'react-force-graph';
 import {ActionTypes} from '../../constants';
-import {toggleGraphView, setStoredProcedureSelection, setTableSelection, setRelationSelection, removeSelectedNodes, setRelationTypesSelection, setUsersSelection, setTeamSelection} from 'actions/views/all-db';
+import SpriteText from "three-spritetext";
+import {toggleGraphView, setStoredProcedureSelection, setTableSelection, toggleShowLabels, setRelationSelection, removeSelectedNodes, setRelationTypesSelection, setUsersSelection, setTeamSelection} from 'actions/views/all-db';
 import cx from 'classnames';
 import {v4} from "uuid";
 import {
@@ -33,6 +34,9 @@ export class AllDb extends React.Component {
         this.forceGraphRef = React.createRef();
         this.handleGraphDataViewToggle = this
             .handleGraphDataViewToggle
+            .bind(this);
+        this.handleShowLabelsToggle = this
+            .handleShowLabelsToggle
             .bind(this);
         this.handleStoredProcSelectionChanged = this
             .handleStoredProcSelectionChanged
@@ -215,6 +219,18 @@ export class AllDb extends React.Component {
             width={window.innerWidth * .7}
             height={window.innerHeight}
             nodeAutoColorBy="type"
+            linkAutoColorBy="type"
+            linkWidth={3}
+            nodeThreeObject={node => {
+                if(this.props.showLabels) {
+                    const sprite = new SpriteText();
+                    sprite.color = node.color;
+                    sprite.textHeight = 8;
+                    sprite.text = node.name;
+                    return sprite;        
+                }
+                return false;
+            }}
             onNodeClick={(n) => {
                 if(n.type == "storedProc" && this.props.selectedStoredProcedures.indexOf(n) == -1) {
                     this.handleStoredProcSelectionChanged([...(this.props.selectedStoredProcedures || []), n])
@@ -230,6 +246,10 @@ export class AllDb extends React.Component {
                 }
             }}
             />
+    }
+
+    handleShowLabelsToggle(showLabels) {
+        this.props.dispatch(toggleShowLabels(showLabels))
     }
 
     handleStoredProcSelectionChanged(selected) {
@@ -319,16 +339,20 @@ export class AllDb extends React.Component {
                         
                         <FormGroup controlId="graphTableView">
                             <ControlLabel>Graph/Table</ControlLabel>
-                            <Switch onChange={(el, state) => this.handleGraphDataViewToggle(!this.props.isGraphView)}/>
+                            <Switch value={this.props.isGraphView} onChange={(el, state) => this.handleGraphDataViewToggle(!this.props.isGraphView)}/>
                         </FormGroup>
-                        <FormGroup controlId="clearSelections">
+                        <FormGroup controlId="toggleNames">
+                        <ControlLabel>Show Labels</ControlLabel>
+                            <Switch value={this.props.showLabels} onChange={(el, state) => this.handleShowLabelsToggle(!this.props.showLabels)}/>
+                        </FormGroup>
+                        <FormGroup controlId="miscControls">
                             <Button onClick={(e,s) => {
                                 this.handleStoredProcSelectionChanged([]);
                                 this.handleRelationTypesSelectionChanged([]);
                                 this.handleTableSelectionChanged([]);
                                 this.handleTeamSelectionChanged([]);
                                 this.handleUserSelectionChanged([]);
-                            }}>Clear</Button>
+                            }}>Clear</Button><br/>
                         </FormGroup>
                     </div>
                 </div>
@@ -427,6 +451,7 @@ function mapStateToProps(state) {
         links: state.allDb.links,
         distinctRelationTypes: state.allDb.distinctRelationTypes,
         isGraphView: state.allDb.isGraphView,
+        showLabels: state.allDb.showLabels,
         selectedStoredProcedures: state.allDb.selectedStoredProcedures,
         selectedTables: state.allDb.selectedTables,
         selectedRelationTypes: state.allDb.selectedRelationTypes,

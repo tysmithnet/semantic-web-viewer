@@ -7,6 +7,13 @@ export function toggleGraphView(isGraphView) {
     }
 }
 
+export function toggleShowLabels(showLabels) {
+    return {
+        type: ActionTypes.VIEWS.ALL_DB.ALL_DB_TOGGLE_SHOW_LABELS,
+        payload: showLabels
+    }
+}
+
 export function setStoredProcedureSelection(procIds) {
     return {
         type: ActionTypes.VIEWS.ALL_DB.ALL_DB_STORED_PROC_SELECTION_CHANGED,

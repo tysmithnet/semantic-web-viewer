@@ -7,6 +7,7 @@ export const allDbState = {
     tables: [],
     distinctRelationTypes: [],
     isGraphView: true,
+    showLabels: false,
     nodes: [],
     links: [],
     selectedStoredProcedures: [],
@@ -137,6 +138,12 @@ export default {
             return Object.freeze({
                 ...state,
                 isGraphView: payload
+            });
+        },
+        [ActionTypes.VIEWS.ALL_DB.ALL_DB_TOGGLE_SHOW_LABELS](state, {payload}) {
+            return Object.freeze({
+                ...state,
+                showLabels: payload
             });
         },
         [ActionTypes.VIEWS.ALL_DB.ALL_DB_STORED_PROC_SELECTION_CHANGED](state, {payload}) {
