@@ -41,3 +41,17 @@ export function removeSelectedNodes(nodes) {
         payload: nodes
     }
 }
+
+export function setUsersSelection(users) {
+    return {
+        type: ActionTypes.VIEWS.ALL_DB.ALL_DB_USER_SELECTION_CHANGED,
+        payload: users
+    }
+}
+
+export function setTeamSelection(teams) {
+    return {
+        type: ActionTypes.VIEWS.ALL_DB.ALL_DB_TEAM_SELECTION_CHANGED,
+        payload: teams
+    }
+}

@@ -13,6 +13,8 @@ export const allDbState = {
     selectedTables: [],
     selectedRelationTypes: [],
     selectedRelations: [],
+    selectedUsers: [],
+    selectedTeams: [],
     isLoaded: false
 };
 
@@ -31,13 +33,14 @@ export default {
                     return {id: x.tb.value, name: x.title.value, type: "table"}; // todo: constant value
                 });
 
-            const links = payload
+            let links = payload
                 .relations
                 .map(x => {
                     return {
-                        source: storedProcs.filter(sp => sp.id == x.sp.value)[0], 
-                        target: tables.filter(t => t.id == x.tb.value)[0], 
-                        type: x.rel.value, name: x.relType.value
+                        source: storedProcs.find(sp => sp.id == x.sp.value), 
+                        target: tables.find(t => t.id == x.tb.value), 
+                        type: x.rel.value, 
+                        name: x.relType.value
                     }
                 });
             const seenTypes = new Set();
@@ -48,7 +51,43 @@ export default {
                 }
                 return agg;
             }, []);
-            const nodes = [...(storedProcs || []), ...(tables || [])];
+
+            let users = payload.teams.map(t => {
+                return {
+                    id: t.user.value,
+                    name: t.username.value,
+                    type: "user",
+                    teams: [{
+                        id: t.team.value,
+                        name: t.teamname.value
+                    }]
+                }
+            });
+
+            users = users.reduce((a, c) => {
+                const existing = a.find(x => x.id == c.id);
+                if(existing) {
+                    c.teams.push(...existing.teams);
+                }
+                else {
+                    a.push(c);
+                }
+                return a;
+            }, []);
+
+            const modifications = payload.modifications.map(m => {
+                const source = storedProcs.find(s => s.id == m.sp.value);
+                const target = users.find(u => u.id == m.user.value);
+                return {
+                    source,
+                    target,
+                    name: "edit",
+                    type: "http://example.org/actions/edit"
+                }
+            });
+            
+            links = links.concat(modifications);
+            const nodes = [...(storedProcs || []), ...(tables || []), ...(users || [])];
             return Object.freeze({
                 ...state,
                 isLoaded: true,
@@ -96,6 +135,18 @@ export default {
             return Object.freeze({
                 ...state,
                 selectedRelationTypes: payload
+            });
+        },
+        [ActionTypes.VIEWS.ALL_DB.ALL_DB_USER_SELECTION_CHANGED](state, {payload}) {
+            return Object.freeze({
+                ...state,
+                selectedUsers: payload
+            });
+        },
+        [ActionTypes.VIEWS.ALL_DB.ALL_DB_TEAM_SELECTION_CHANGED](state, {payload}) {
+            return Object.freeze({
+                ...state,
+                selectedTeams: payload
             });
         }
     })

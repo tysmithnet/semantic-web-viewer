@@ -1,10 +1,3 @@
-import keyMirror from 'fbjs/lib/keyMirror';
-
-/**
- * @namespace Constants
- * @desc App constants
- */
-
 export const ActionTypes = {
   USER: {
     USER_LOGIN_REQUEST: "USER.USER_LOGIN_REQUEST",
@@ -33,16 +26,13 @@ export const ActionTypes = {
       ALL_DB_TABLE_SELECTION_CHANGED: "VIEWS.ALL_DB.ALL_DB_TABLE_SELECTION_CHANGED",
       ALL_DB_RELATION_SELECTION_CHANGED: "VIEWS.ALL_DB.ALL_DB_RELATION_SELECTION_CHANGED",
       ALL_DB_RELATION_TYPES_SELECTION_CHANGED: "VIEWS.ALL_DB.ALL_DB_RELATION_TYPES_SELECTION_CHANGED",
-      ALL_DB_REMOVE_NODES_REQUESTED: "VIEWS.ALL_DB.ALL_DB_REMOVE_NODES_REQUESTED"
+      ALL_DB_REMOVE_NODES_REQUESTED: "VIEWS.ALL_DB.ALL_DB_REMOVE_NODES_REQUESTED",
+      ALL_DB_USER_SELECTION_CHANGED: "VIEWS.ALL_DB.ALL_DB_USER_SELECTION_CHANGED"
     }
   }
 }
 
-/**
- * @constant {Object} XHR
- * @memberof Constants
- */
-export const XHR = keyMirror({
-  SUCCESS: undefined,
-  FAIL: undefined,
-});
+export const XHR = {
+  SUCCESS: "SUCCESS",
+  FAIL: "FAIL",
+};

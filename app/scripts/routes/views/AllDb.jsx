@@ -354,7 +354,9 @@ function mapStateToProps(state) {
         selectedStoredProcedures: state.allDb.selectedStoredProcedures,
         selectedTables: state.allDb.selectedTables,
         selectedRelationTypes: state.allDb.selectedRelationTypes,
-        selectedRelations: state.allDb.selectedRelations
+        selectedRelations: state.allDb.selectedRelations,
+        selectedUsers: state.allDb.selectedUsers,
+        selectedTeams: state.allDb.selectedTeams
     };
 }
 

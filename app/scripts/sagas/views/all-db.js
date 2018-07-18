@@ -29,13 +29,15 @@ function * loadDataAsync() {
                             "type": "uri",
                             "value": "http://example.org/sp/sp_0"
                         },
-                        "mod": {
+                        "user": {
                             "type": "uri",
-                            "value": "http://example.org/mod/edit"
-                        },
-                        "modname": {
-                            "type": "literal",
-                            "value": "edit"
+                            "value": "http://example.org/user/tsmith"
+                        }
+                    },
+                    {
+                        "sp": {
+                            "type": "uri",
+                            "value": "http://example.org/sp/sp_1"
                         },
                         "user": {
                             "type": "uri",
@@ -47,17 +49,9 @@ function * loadDataAsync() {
                             "type": "uri",
                             "value": "http://example.org/sp/sp_1"
                         },
-                        "mod": {
-                            "type": "uri",
-                            "value": "http://example.org/mod/edit"
-                        },
-                        "modname": {
-                            "type": "literal",
-                            "value": "edit"
-                        },
                         "user": {
                             "type": "uri",
-                            "value": "http://example.org/user/tsmith"
+                            "value": "http://example.org/user/sbrown"
                         }
                     },
                 ]
@@ -73,7 +67,7 @@ function * loadDataAsync() {
                     {
                         "user": {
                             "type": "uri",
-                            "value": "http://example.org/users/tsmith"
+                            "value": "http://example.org/user/tsmith"
                         },
                         "username": {
                             "type": "literal",
@@ -91,7 +85,7 @@ function * loadDataAsync() {
                     {
                         "user": {
                             "type": "uri",
-                            "value": "http://example.org/users/tsmith"
+                            "value": "http://example.org/user/tsmith"
                         },
                         "username": {
                             "type": "literal",
@@ -99,7 +93,7 @@ function * loadDataAsync() {
                         },
                         "team": {
                             "type": "uri",
-                            "value": "http://example.org/teams/lms"
+                            "value": "http://example.org/team/lms"
                         },
                         "teamname": {
                             "type": "literal",
@@ -109,7 +103,7 @@ function * loadDataAsync() {
                     {
                         "user": {
                             "type": "uri",
-                            "value": "http://example.org/users/sbrown"
+                            "value": "http://example.org/user/sbrown"
                         },
                         "username": {
                             "type": "literal",
@@ -117,7 +111,7 @@ function * loadDataAsync() {
                         },
                         "team": {
                             "type": "uri",
-                            "value": "http://example.org/teams/techprojects"
+                            "value": "http://example.org/team/techprojects"
                         },
                         "teamname": {
                             "type": "literal",
@@ -179,7 +173,6 @@ function * loadDataAsync() {
             };
             allTables.results.bindings.push(tb);
         }
-
         const operations = ['insert', 'update', 'delete', 'select']
         const map = {};
 
@@ -214,7 +207,9 @@ function * loadDataAsync() {
             payload: {
                 storedProcs: allProcs.results.bindings,
                 relations: procTableRelationships.results.bindings,
-                tables: allTables.results.bindings
+                tables: allTables.results.bindings,
+                teams: teams.results.bindings,
+                modifications: modifications.results.bindings
             }
         });
     }
