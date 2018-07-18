@@ -2,3 +2,4 @@ node_modules
 .vagrant
 dist
 .vscode
+yarn-error.log
