@@ -173,7 +173,7 @@ function * loadDataAsync() {
             };
             allTables.results.bindings.push(tb);
         }
-        const operations = ['insert', 'update', 'delete', 'select']
+        const operations = ['read', 'write']
         const map = {};
 
         for(let i = 0; i < numRelations; i++) {

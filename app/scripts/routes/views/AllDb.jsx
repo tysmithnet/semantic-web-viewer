@@ -219,13 +219,20 @@ export class AllDb extends React.Component {
             width={window.innerWidth * .7}
             height={window.innerHeight}
             nodeAutoColorBy="type"
-            linkAutoColorBy="type"
-            linkWidth={3}
+            linkColor={link => {
+                if(link.type == "http://example.org/rel/read") {
+                    return "#ff0000"
+                }
+                else if(link.type == "http://example.org/rel/write") {
+                    return "#00ff00"
+                }
+            }}
+            linkWidth={2}
             nodeThreeObject={node => {
                 if(this.props.showLabels) {
                     const sprite = new SpriteText();
                     sprite.color = node.color;
-                    sprite.textHeight = 8;
+                    sprite.textHeight = 4;
                     sprite.text = node.name;
                     return sprite;        
                 }
