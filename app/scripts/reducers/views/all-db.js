@@ -52,28 +52,29 @@ export default {
                 return agg;
             }, []);
 
-            let users = payload.teams.map(t => {
+            const teams = payload.teams.map(t => {
+                return {
+                    id: t.team.value,
+                    name: t.teamname.value,
+                    type: "team"
+                }
+            })
+
+            const users = payload.teams.map(t => {
                 return {
                     id: t.user.value,
                     name: t.username.value,
                     type: "user",
-                    teams: [{
-                        id: t.team.value,
-                        name: t.teamname.value
-                    }]
                 }
             });
 
-            users = users.reduce((a, c) => {
-                const existing = a.find(x => x.id == c.id);
-                if(existing) {
-                    c.teams.push(...existing.teams);
+            const teamMemberships = payload.teams.map(t => {
+                return {
+                    source: users.find(u => u.id == t.user.value),
+                    target: teams.find(x => x.id == t.team.value),
+                    type: "teamMembership"
                 }
-                else {
-                    a.push(c);
-                }
-                return a;
-            }, []);
+            })
 
             const modifications = payload.modifications.map(m => {
                 const source = storedProcs.find(s => s.id == m.sp.value);
@@ -86,8 +87,8 @@ export default {
                 }
             });
             
-            links = links.concat(modifications);
-            const nodes = [...(storedProcs || []), ...(tables || []), ...(users || [])];
+            links = links.concat(teamMemberships).concat(modifications);
+            const nodes = [...(storedProcs || []), ...(tables || []), ...(users || []), ...(teams || [])];
             return Object.freeze({
                 ...state,
                 isLoaded: true,
