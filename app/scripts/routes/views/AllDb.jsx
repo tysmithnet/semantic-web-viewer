@@ -47,6 +47,9 @@ export class AllDb extends React.Component {
             .handleRemoveSelectedClicked
             .bind(this);
         this.handleRelationTypesSelectionChanged = this.handleRelationTypesSelectionChanged.bind(this);
+        this.columnFormatterProc = this.columnFormatterProc.bind(this);
+        this.columnFormatterRel = this.columnFormatterRel.bind(this);
+        this.columnFormatterTable = this.columnFormatterTable.bind(this);
     }
 
     componentWillMount() {
@@ -265,32 +268,80 @@ export class AllDb extends React.Component {
         )
     }
 
+    columnFormatterProc(col, row) {
+        return (
+            <Button bsStyle="link" 
+            onClick={() => {
+                const exists = this.props.selectedStoredProcedures.indexOf(row.proc) != -1;
+                if(!exists) {
+                    const existingAndNew = [...(this.props.selectedStoredProcedures || [])]
+                    existingAndNew.push(row.proc);
+                    this.handleStoredProcSelectionChanged(existingAndNew)
+                }
+            }}>{col}</Button>
+        )
+    }
+
+    columnFormatterRel(col, row) {
+        return (
+            <Button bsStyle="link" 
+            onClick={() => {
+                const exists = this.props.selectedRelationTypes.indexOf(col) != -1;
+                if(!exists) {
+                    const existingAndNew = [...(this.props.selectedRelationTypes || [])]
+                    existingAndNew.push(col);
+                    this.handleRelationTypesSelectionChanged(existingAndNew);
+                }
+            }}>{col}</Button>
+        )
+    }
+
+    columnFormatterTable(col, row) {
+        return (
+            <Button bsStyle="link" 
+            onClick={() => {
+                const exists = this.props.selectedTables.indexOf(row.table) != -1;
+                if(!exists) {
+                    const existingAndNew = [...(this.props.selectedTables || [])]
+                    existingAndNew.push(col);
+                    this.handleTableSelectionChanged(existingAndNew)
+                }
+            }}>{col}</Button>
+        )
+    }
+
     renderTable() {
         const columns = [{
-            dataField: 'proc',
+            dataField: 'procName',
             text: 'Stored Proc',
             sort: true,
-            filter: textFilter()
+            filter: textFilter(),
+            formatter: this.columnFormatterProc
         },{
-            dataField: 'rel',
+            dataField: 'relName',
             text: 'Relation',
             sort: true,
-            filter: textFilter()
+            filter: textFilter(),
+            formatter: this.columnFormatterRel
         },{
-            dataField: 'table',
+            dataField: 'tableName',
             text: 'Table',
             sort: true,
-            filter: textFilter()
+            filter: textFilter(),
+            formatter: this.columnFormatterTable
         }]
         const graphData = this.getGraphData();
         const tableData = graphData.links.map(l => {
         {
-            const id = `${l.source.name}_${l.name}_${l.target.name}`;
+            const id = `${l.source.id}_${l.type}_${l.target.id}`;
             return {
                 id,
-                proc: l.source.name,
-                rel: l.name,
-                table: l.target.name
+                proc: l.source,
+                procName: l.source.name,
+                rel: l,
+                relName: l.name,
+                table: l.target,
+                tableName: l.target.name,
             }   
         }
         })
