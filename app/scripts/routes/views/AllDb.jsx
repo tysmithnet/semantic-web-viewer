@@ -3,7 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {ForceGraph3D} from 'react-force-graph';
 import {ActionTypes} from '../../constants';
-import {toggleGraphView, setStoredProcedureSelection, setTableSelection, setRelationSelection, removeSelectedNodes, setRelationTypesSelection} from 'actions/views/all-db';
+import {toggleGraphView, setStoredProcedureSelection, setTableSelection, setRelationSelection, removeSelectedNodes, setRelationTypesSelection, setUsersSelection, setTeamSelection} from 'actions/views/all-db';
 import cx from 'classnames';
 import {v4} from "uuid";
 import {
@@ -50,6 +50,16 @@ export class AllDb extends React.Component {
         this.columnFormatterProc = this.columnFormatterProc.bind(this);
         this.columnFormatterRel = this.columnFormatterRel.bind(this);
         this.columnFormatterTable = this.columnFormatterTable.bind(this);
+        this.handleTeamSelectionChanged = this.handleTeamSelectionChanged.bind(this);
+        this.handleUserSelectionChanged = this.handleUserSelectionChanged.bind(this);
+    }
+
+    handleTeamSelectionChanged(teams) {
+        this.props.dispatch(setTeamSelection(teams))
+    }
+
+    handleUserSelectionChanged(users) {
+        this.props.dispatch(setUsersSelection(users))
     }
 
     componentWillMount() {
@@ -76,7 +86,9 @@ export class AllDb extends React.Component {
     getGraphData() {
         if(this.props.selectedStoredProcedures.length == 0 
             && this.props.selectedTables.length == 0
-            && this.props.selectedRelationTypes.length == 0){
+            && this.props.selectedRelationTypes.length == 0
+            && this.props.selectedTeams.length == 0
+            && this.props.selectedUsers.length == 0){
                 return {nodes: this.props.nodes, links: this.props.links}
             }
 
@@ -104,6 +116,38 @@ export class AllDb extends React.Component {
             if(this.props.selectedTables.length) {
                 for(let j = 0; j < this.props.selectedTables.length; j++) {
                     const selected = this.props.selectedTables[j];
+                    if(link.target == selected) {
+                        if(links.indexOf(link) == -1) {
+                            links.push(link);
+                        }
+                        if(nodes.indexOf(link.source) == -1) {
+                            nodes.push(link.source);
+                        } 
+                        if(nodes.indexOf(link.target) == -1) {
+                            nodes.push(link.target);
+                        } 
+                    }
+                }
+            }
+            if(this.props.selectedTeams.length) {
+                for(let j = 0; j < this.props.selectedTeams.length; j++) {
+                    const selected = this.props.selectedTeams[j];
+                    if(link.target == selected) {
+                        if(links.indexOf(link) == -1) {
+                            links.push(link);
+                        }
+                        if(nodes.indexOf(link.source) == -1) {
+                            nodes.push(link.source);
+                        } 
+                        if(nodes.indexOf(link.target) == -1) {
+                            nodes.push(link.target);
+                        } 
+                    }
+                }
+            }
+            if(this.props.selectedUsers.length) {
+                for(let j = 0; j < this.props.selectedUsers.length; j++) {
+                    const selected = this.props.selectedUsers[j];
                     if(link.target == selected) {
                         if(links.indexOf(link) == -1) {
                             links.push(link);
@@ -178,6 +222,12 @@ export class AllDb extends React.Component {
                 else if(n.type == "table" && this.props.selectedTables.indexOf(n) == -1) {
                     this.handleTableSelectionChanged([...(this.props.selectedTables || []), n])
                 }
+                else if(n.type == "team" && this.props.selectedTeams.indexOf(n) == -1) {
+                    this.handleTeamSelectionChanged([...(this.props.selectedTeams || []), n])
+                }
+                else if(n.type == "user" && this.props.selectedUsers.indexOf(n) == -1) {
+                    this.handleUserSelectionChanged([...(this.props.selectedUsers || []), n])
+                }
             }}
             />
     }
@@ -242,6 +292,30 @@ export class AllDb extends React.Component {
                                     .filter(x => x.type == "table")}
                                     selected={this.props.selectedTables}/>
                         </FormGroup>
+                        <FormGroup controlId="teamSelection">
+                            <ControlLabel>Teams</ControlLabel>
+                            <Typeahead
+                                labelKey="name"
+                                multiple
+                                onChange={this.handleTeamSelectionChanged}
+                                options={this
+                                    .props
+                                    .nodes
+                                    .filter(x => x.type == "team")}
+                                    selected={this.props.selectedTeams}/>
+                        </FormGroup>
+                        <FormGroup controlId="userSelection">
+                            <ControlLabel>Users</ControlLabel>
+                            <Typeahead
+                                labelKey="name"
+                                multiple
+                                onChange={this.handleUserSelectionChanged}
+                                options={this
+                                    .props
+                                    .nodes
+                                    .filter(x => x.type == "user")}
+                                    selected={this.props.selectedUsers}/>
+                        </FormGroup>
                         
                         <FormGroup controlId="graphTableView">
                             <ControlLabel>Graph/Table</ControlLabel>
@@ -252,6 +326,8 @@ export class AllDb extends React.Component {
                                 this.handleStoredProcSelectionChanged([]);
                                 this.handleRelationTypesSelectionChanged([]);
                                 this.handleTableSelectionChanged([]);
+                                this.handleTeamSelectionChanged([]);
+                                this.handleUserSelectionChanged([]);
                             }}>Clear</Button>
                         </FormGroup>
                     </div>
@@ -325,7 +401,7 @@ export class AllDb extends React.Component {
         const graphData = this.getGraphData();
         const tableData = graphData.links.map(l => {
         {
-            const id = `${l.source.id}_${l.type}_${l.target.id}`;
+            const id = v4();
             return {
                 id,
                 proc: l.source,

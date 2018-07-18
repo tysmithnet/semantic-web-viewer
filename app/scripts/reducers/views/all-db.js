@@ -1,5 +1,5 @@
 import {createReducer} from 'modules/helpers';
-
+import {v4} from "uuid";
 import {ActionTypes} from 'constants/index';
 
 export const allDbState = {
@@ -37,6 +37,7 @@ export default {
                 .relations
                 .map(x => {
                     return {
+                        id: v4(),
                         source: storedProcs.find(sp => sp.id == x.sp.value), 
                         target: tables.find(t => t.id == x.tb.value), 
                         type: x.rel.value, 
@@ -52,7 +53,7 @@ export default {
                 return agg;
             }, []);
 
-            const teams = payload.teams.map(t => {
+            let teams = payload.teams.map(t => {
                 return {
                     id: t.team.value,
                     name: t.teamname.value,
@@ -60,7 +61,15 @@ export default {
                 }
             })
 
-            const users = payload.teams.map(t => {
+            teams = teams.reduce((a, c) => {
+                if(a.find(x => x.id == c.id)) {
+                    return a;
+                }
+                a.push(c);
+                return a;
+            }, []);
+
+            let users = payload.teams.map(t => {
                 return {
                     id: t.user.value,
                     name: t.username.value,
@@ -68,8 +77,17 @@ export default {
                 }
             });
 
+            users = users.reduce((a, c) => {
+                if(a.find(x => x.id == c.id)) {
+                    return a;
+                }
+                a.push(c);
+                return a;
+            }, []);
+
             const teamMemberships = payload.teams.map(t => {
                 return {
+                    id: v4(),
                     source: users.find(u => u.id == t.user.value),
                     target: teams.find(x => x.id == t.team.value),
                     type: "teamMembership"
@@ -80,6 +98,7 @@ export default {
                 const source = storedProcs.find(s => s.id == m.sp.value);
                 const target = users.find(u => u.id == m.user.value);
                 return {
+                    id: v4(),
                     source,
                     target,
                     name: "edit",
@@ -105,7 +124,13 @@ export default {
                     .filter(sp => tables.some(x => x.id == sp.id)),
                 selectedRelations: state
                     .selectedRelations
-                    .filter(r => links.some(x => x.id == r.source.id || r.target.id == x.id))
+                    .filter(r => links.some(x => x.id == r.source.id || r.target.id == x.id)),
+                selectedTeams: state
+                    .selectedTeams
+                    .filter(t => teams.some(x => x.id == t.id)),
+                selectedUsers: state
+                    .selectedUsers
+                    .filter(u => users.some(x => x.id == u.id))
             });
         },
         [ActionTypes.VIEWS.ALL_DB.ALL_DB_TOGGLE_GRAPH_VIEW](state, {payload}) {

@@ -75,7 +75,7 @@ function * loadDataAsync() {
                         },
                         "team": {
                             "type": "uri",
-                            "value": "http://example.org/teams/techprojects"
+                            "value": "http://example.org/team/techprojects"
                         },
                         "teamname": {
                             "type": "literal",
